@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Head from 'next/head';
 import styled from 'styled-components';
 
 const Main = styled.div`
@@ -12,24 +12,22 @@ const Main = styled.div`
   padding: 2.4rem;
   height: 100%;
   width: 100%;
-`
+`;
 
-const Dot = styled.span`
-  color: var(--accent)
-`
+const Dot = styled.span``;
 
 const Container = styled.div`
   display: inline-block;
-  padding: 1.2rem 2.4rem; 
+  padding: 1.2rem 2.4rem;
+  background-color: var(--accent);
   border-radius: var(--border-radius);
-  border: 1px solid var(--f-high);
-`
+`;
 export default function Home() {
   return (
     <Main>
       <Container>
-      Coming Soon<Dot>.</Dot>
+        Coming Soon<Dot>.</Dot>
       </Container>
     </Main>
-  )
+  );
 }
