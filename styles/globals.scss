@@ -1,3 +1,23 @@
+:root {
+  --font-base: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  --font-accent: 'Roboto Mono', monospace;
+  --f-low: #c8c8c8;
+  --f-base: #888888;
+  --f-high: #333333;
+  --f-bg: #444444;
+  --b-low: #ffffff;
+  --b-base: #eeeeee;
+  --b-high: #dddddd;
+  --b-bg: #efefef;
+  --accent: #ff5641;
+  --border-radius: 0.2em;
+  --border-radius-m: 1.2rem;
+  --viewport-small: 40em;
+  --viewport-medium: 64em;
+  --viewport-large: 120em;
+}
+
 html,
 body,
 #__next {
@@ -6,8 +26,7 @@ body,
   margin: 0;
   height: 100%;
   width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: var(--font-base);
 }
 
 a {
@@ -17,18 +36,6 @@ a {
 
 * {
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-
-:root {
-  --f-low: #111111;
-  --f-base: #222222;
-  --f-high: #333333;
-  --f-bg: #444444;
-  --b-low: #FFFFFF;
-  --b-base: #EEEEEE;
-  --b-high: #DDDDDD;
-  --b-bg: #CCCCCC;
-  --accent: #ffc700;
-  --border-radius: 0.2em;
-}
-
