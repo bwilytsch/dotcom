@@ -13,6 +13,7 @@ export default (req, res) => {
 const status = {
   PROGRESS: 'PROGRESS',
   FINISEDH: 'FINISHED',
+  REDACTED: 'REDACTED',
 };
 
 export const projects = [
@@ -26,35 +27,35 @@ export const projects = [
   {
     title: 'VR — Oculus Venus',
     description: '',
-    status: status.FINISHED,
+    status: null,
     url: '',
     media: [{ src: '', type: 'image' }],
   },
   {
     title: 'VR — Oculus Browser',
     description: '',
-    status: status.FINISHED,
+    status: null,
     url: '',
     media: [{ src: '', type: 'image' }],
   },
   {
     title: 'AR — Fnatic DASH Mousepad',
     description: '',
-    status: status.FINISHED,
+    status: null,
     url: '',
     media: [{ src: '', type: 'image' }],
   },
   {
     title: 'WatchOS — The Weather Channel',
     description: '',
-    status: status.FINISHED,
+    status: null,
     url: '',
     media: [{ src: '', type: 'image' }],
   },
   {
     title: 'AR & VR — The Future of Work',
     description: '',
-    status: status.FINISHED,
+    status: status.REDACTED,
     url: '',
     media: [{ src: '', type: 'image' }],
   },

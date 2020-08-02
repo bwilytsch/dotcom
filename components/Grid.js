@@ -2,6 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { viewports } from './constants';
 
+export const FlexGrid = styled.section`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+`;
+
 const Grid = styled.section`
   box-sizing: border-box;
   display: grid;
@@ -16,6 +23,11 @@ const Grid = styled.section`
 
   @media ${viewports.small()} {
     grid-template-columns: repeat(1, 1fr);
+
+    > * {
+      grid-column-start: start;
+      grid-column-end: end;
+    }
   }
 `;
 

@@ -3,20 +3,37 @@ import NextLink from 'next/link';
 import styled, { css } from 'styled-components';
 import { viewports } from './constants';
 
+// Grid based extension
+const gridStyle = css`
+  grid-column-start: ${props => props.from};
+  grid-column-end: ${props => props.to};
+
+  @media ${viewports.small()} {
+    grid-column-start: first;
+    grid-column-end: end;
+  }
+`;
+
 // Fix fonts size to make with agnostic
 export const Headline = styled.h1`
   font-size: calc(80vw / 6);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.02em;
   color: var(--accent);
   margin: 0;
   padding: 0;
 `;
 
+export const DisplayHeadline = styled(Headline)`
+  ${gridStyle}
+  color: white;
+`;
+
 export const Subheadline = styled.h2`
   font-size: 2.4rem;
   font-weight: 500;
+  line-height: 1.2em;
   color: var(--accent);
   letter-spacing: -0.06em;
 `;

@@ -1,18 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import Grid from './Grid';
+import { viewports } from './constants';
 
 const links = [
   {
-    label: 'github',
+    label: 'Github',
     url: '',
   },
   {
-    label: 'linkedin',
+    label: 'Linkedin',
     url: '',
   },
   {
-    label: 'codesandbox',
+    label: 'Codesandbox',
     url: '',
   },
   {
@@ -23,11 +24,22 @@ const links = [
 
 const StyledFooter = styled.footer`
   width: calc(100% - 4.8rem);
+  display: block;
   font-size: 1.4rem;
-  margin: 2.4rem;
+  margin: 0 2.4rem;
   color: var(--f-base);
   border: 1px solid var(--f-low);
   border-radius: var(--border-radius-m);
+
+  a {
+    display: inline-block;
+  }
+
+  @media ${viewports.small('max')} {
+    a:not(:last-child) {
+      margin-bottom: 2.4rem;
+    }
+  }
 `;
 
 const Footer = () => {
