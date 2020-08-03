@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import Grid from './Grid';
 import { viewports } from './constants';
@@ -22,17 +22,31 @@ const links = [
   },
 ];
 
+const StyledCopyright = styled.div`
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 2.4rem;
+  color: var(--f-base);
+`;
+
 const StyledFooter = styled.footer`
   width: calc(100% - 4.8rem);
   display: block;
   font-size: 1.4rem;
-  margin: 0 2.4rem;
+  margin: 0 2.4rem 2.4rem 2.4rem;
   color: var(--f-base);
   border: 1px solid var(--f-low);
   border-radius: var(--border-radius-m);
 
   a {
+    padding: 2.4rem;
     display: inline-block;
+    border-radius: var(--border-radius-s);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--f-high);
+    }
   }
 
   @media ${viewports.small('max')} {
@@ -44,15 +58,18 @@ const StyledFooter = styled.footer`
 
 const Footer = () => {
   return (
-    <StyledFooter>
-      <Grid>
-        {links.map(({ label, url }, idx) => (
-          <a href={url} key={idx}>
-            {label}
-          </a>
-        ))}
-      </Grid>
-    </StyledFooter>
+    <Fragment>
+      <StyledFooter>
+        <Grid style={{ padding: '0.8rem' }}>
+          {links.map(({ label, url }, idx) => (
+            <a href={url} key={idx}>
+              {label}
+            </a>
+          ))}
+        </Grid>
+      </StyledFooter>
+      <StyledCopyright>Last update: {new Date().toString()}</StyledCopyright>
+    </Fragment>
   );
 };
 

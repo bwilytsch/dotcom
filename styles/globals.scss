@@ -4,7 +4,7 @@
   --font-accent: 'Roboto Mono', monospace;
   --f-low: #c8c8c8;
   --f-base: #888888;
-  --f-high: #333333;
+  --f-high: #555555;
   --f-bg: #444444;
   --b-low: #ffffff;
   --b-base: #eeeeee;
@@ -12,6 +12,7 @@
   --b-bg: #efefef;
   --accent: #ff5641;
   --border-radius: 0.2em;
+  --border-radius-s: 0.6rem;
   --border-radius-m: 1.2rem;
   --border-radius-l: 2.4rem;
   --border-radius-xl: 3.6rem;
@@ -29,6 +30,7 @@ body,
   height: 100%;
   width: 100%;
   font-family: var(--font-base);
+  background-color: var(--b-bg);
 }
 
 a {

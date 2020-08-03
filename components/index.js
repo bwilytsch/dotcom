@@ -8,6 +8,7 @@ import Typography, {
 } from './Typography';
 import Grid from './Grid';
 import Footer from './Footer';
+import Navigation from './Navigation';
 
 export {
   Typography,
@@ -18,5 +19,6 @@ export {
   Grid,
   Label,
   Link,
+  Navigation,
   Footer,
 };

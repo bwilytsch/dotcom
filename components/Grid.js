@@ -16,6 +16,7 @@ const Grid = styled.section`
   grid-template-columns: ${props =>
     props.cols ? `repeat(${props.cols}, 1fr)` : `repeat(4, 1fr)`};
   grid-column-gap: ${props => (props.gutter ? props.gutter : `1.6rem`)};
+  grid-row-gap: 1.2rem;
 
   @media ${viewports.medium()} {
     grid-template-columns: repeat(2, 1fr);
@@ -23,11 +24,6 @@ const Grid = styled.section`
 
   @media ${viewports.small()} {
     grid-template-columns: repeat(1, 1fr);
-
-    > * {
-      grid-column-start: start;
-      grid-column-end: end;
-    }
   }
 `;
 

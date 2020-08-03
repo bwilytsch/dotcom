@@ -1,4 +1,6 @@
-module.exports = {
+const withSvgr = require('next-svgr');
+
+module.exports = withSvgr({
   webpackDevMiddleware: config => {
     config.watchOptions = {
       poll: 1000,
@@ -7,4 +9,4 @@ module.exports = {
 
     return config;
   },
-};
+});

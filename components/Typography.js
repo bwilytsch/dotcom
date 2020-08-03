@@ -9,8 +9,6 @@ const gridStyle = css`
   grid-column-end: ${props => props.to};
 
   @media ${viewports.small()} {
-    grid-column-start: first;
-    grid-column-end: end;
   }
 `;
 
