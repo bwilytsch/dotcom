@@ -110,6 +110,9 @@ const hasURL = url => {
 export default function Home() {
   return (
     <Main>
+      <Grid style={{ backgroundColor: 'var(--accent)' }}>
+        <DisplayStatus>Work in progress</DisplayStatus>
+      </Grid>
       <Display>
         <Grid>
           <DisplayLabel>
@@ -155,13 +158,27 @@ export default function Home() {
         </Subheadline>
       </Grid>
       <Grid>
-        <Label>Awards</Label>
         <Copy>
-          <CopyHeadline>About</CopyHeadline>
+          <Label>Experiments</Label>
+          <Copy>
+            Dynamic AABB node tree. Fast & Performant Collision detection. —
+            <Link href="https://ho1xz.csb.app/">View</Link>
+          </Copy>
+        </Copy>
+        <Copy>
+          <Label>Professional</Label>
+          <CopyHeadline>Awards</CopyHeadline>
+          Develeoper Awards - Awwwards <br />
+          Site of the Day — Awwwards <br />
+          Site of the Day — CSSDesignAwards <br />
+          Site of the Day — CSSDesignAwards — Susa Ventures
+        </Copy>
+        <Copy>
+          <Label>Personal</Label>
+          <CopyHeadline>Mechanical Keyboards</CopyHeadline>
           Daily driver — 64%, Brass Plate, lubbed with 205g0 Krytox, TX Films,
           Gateron Yellow Inks, MaxKey BW SA keycaps, frosted low profile case.
         </Copy>
-        <Link href="">Go To Project</Link>
       </Grid>
       <FlexGrid>
         <GraphicSVG

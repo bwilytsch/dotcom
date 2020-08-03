@@ -18,6 +18,7 @@ export const Headline = styled.h1`
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: -0.02em;
+  line-height: 0.9em;
   color: var(--accent);
   margin: 0;
   padding: 0;
