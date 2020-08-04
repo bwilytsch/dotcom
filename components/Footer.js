@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react';
 import styled from 'styled-components';
 import Grid from './Grid';
+import {Em} from './Typography';
 import {viewports} from './constants';
 
 const links = [
@@ -68,7 +69,10 @@ const Footer = () => {
           ))}
         </Grid>
       </StyledFooter>
-      <StyledCopyright>{new Date().getFullYear().toString()}</StyledCopyright>
+      <StyledCopyright>
+        v0.1 <Em />
+        {new Date().getFullYear().toString()}
+      </StyledCopyright>
     </Fragment>
   );
 };

@@ -189,33 +189,29 @@ const Surface = () => {
       document.body.style.overflow = 'inherit';
     };
 
-    renderer.domElement.ontouchstart = e => {
+    const onStart = e => {
       updatePointer(e);
       pressed = true;
       disableScroll();
       renderer.domElement.addEventListener('touchmove', updatePointer);
-    };
-
-    renderer.domElement.ontouchend = e => {
-      pressed = false;
-      enableScroll();
-      renderer.domElement.removeEventListener('touchmove', updatePointer);
-      pointer.set(-2, -2);
-    };
-
-    renderer.domElement.onmousedown = e => {
-      pressed = true;
-      disableScroll();
-      updatePointer(e);
       renderer.domElement.addEventListener('mousemove', updatePointer);
     };
 
-    renderer.domElement.onmouseup = e => {
+    const onEnd = () => {
       pressed = false;
       enableScroll();
+      renderer.domElement.removeEventListener('touchmove', updatePointer);
       renderer.domElement.removeEventListener('mousemove', updatePointer);
       pointer.set(-2, -2);
     };
+
+    renderer.domElement.ontouchstart = onStart;
+    renderer.domElement.ontouchend = onEnd;
+
+    renderer.domElement.onmousedown = onStart;
+    renderer.domElement.onmouseup = onEnd;
+
+    renderer.domElement.onmouseleave = onEnd;
 
     const animate = () => {
       raycaster.setFromCamera(pointer, camera);
