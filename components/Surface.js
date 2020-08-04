@@ -7,11 +7,16 @@ import {
   Mesh,
   SphereGeometry,
   PlaneBufferGeometry,
+  ClampToEdgeWrapping,
   PlaneGeometry,
   ShaderMaterial,
+  LinearFilter,
+  NearestFilter,
   Color,
   Vector2,
   TextureLoader,
+  Texture,
+  CanvasTexture,
   Raycaster,
   MeshBasicMaterial,
 } from 'three';
@@ -54,7 +59,7 @@ const fragmentShader = `
 
   void main(){
     vec4 tex = texture2D(map, vUv + (noise * 0.1));
-    gl_FragColor = vec4((1.0 - tex.xyz) * 0.24, 1.0);
+    gl_FragColor = vec4(tex.xyz, 1.0);
   }
 `;
 
@@ -67,16 +72,88 @@ const StyledTarget = styled.div`
 
   canvas {
     width: 100%;
-    height: 100%;
+    height: auto;
   }
 `;
 
-const assetURL = './grid.png';
+const assetURL = '';
 
-const Surface = () => {
+const defaultTextOptions = {
+  font: 'Inter, sans-serif',
+  size: 240,
+  weight: 700,
+  color: '#FFFFFF',
+  verticalAlign: 'center',
+  margin: 24,
+};
+
+class DynamicTexture {
+  constructor() {
+    this.domElement = document.createElement('canvas');
+    this.domElement.setAttribute('data-name', 'texture');
+    this._ctx = this.domElement.getContext('2d');
+  }
+  setSize(width, height) {
+    this.domElement.width = width;
+    this.domElement.height = height;
+  }
+  image(imageUrl) {}
+  text(word = 'Hello.', opts = defaultTextOptions) {
+    const {font, size, weight, color, margin} = {
+      ...defaultTextOptions,
+      ...opts,
+    };
+    this._ctx.font = `${weight} ${size}px ${font} `;
+    this._ctx.fillStyle = color;
+    this._ctx.fillText(word, margin, size, this.domElement.width - 2 * margin);
+  }
+  clear() {
+    this._ctx.fillStyle = '#000000';
+    this._ctx.fillRect(0, 0, this.domElement.width, this.domElement.height);
+  }
+  grid(
+    {width, height, tileSize, color} = {
+      width: 512,
+      height: 512,
+      tileSize: 16,
+      color: '#FFFFFF',
+    },
+  ) {
+    // Calculate Columns
+    const columnCount = Math.floor(width / tileSize);
+    const rowCount = Math.floor(height / tileSize);
+
+    console.log(rowCount, columnCount);
+
+    this.setSize(columnCount * tileSize, rowCount * tileSize);
+
+    for (let i = 0; i < rowCount; i++) {
+      for (let j = 0; j < columnCount; j++) {
+        this._ctx.strokeStyle = color;
+        this._ctx.rect(j * tileSize, i * tileSize, tileSize, tileSize);
+        this._ctx.stroke();
+        this._ctx.closePath();
+      }
+    }
+  }
+}
+
+const Surface = ({ratio = [1, 1]}) => {
   useEffect(() => {
     const size = 512;
+
+    const [w, h] = ratio;
     const container = document.getElementById('three-target');
+    const tex = new DynamicTexture();
+
+    tex.grid({
+      width: size * w * 2,
+      height: size * h * 2,
+      tileSize: 32,
+      color: '#555555',
+    });
+
+    tex.text('Hello.', {size: 240 * w});
     // Clear container for hot-reload
     container.innerHTML = null;
 
@@ -84,22 +161,26 @@ const Surface = () => {
     let mat = null;
 
     const renderer = new WebGLRenderer({antialias: true});
-    renderer.setSize(size, size, false);
+    renderer.setSize(size * w, size * h, false);
 
     const scene = new Scene();
-    const camera = new PerspectiveCamera(72, 1, 0.001, 1000);
+    const camera = new PerspectiveCamera(72, w / h, 0.001, 1000);
 
     // Append to DOM
     container.appendChild(renderer.domElement);
 
-    const textureLoader = new TextureLoader();
+    const texture = new Texture(tex.domElement);
+    texture.generateMipmaps = false;
+    texture.wrapS = texture.wrapT = ClampToEdgeWrapping;
+    texture.minFilter = LinearFilter;
+    texture.needsUpdate = true;
 
     const uniforms = {
       time: {
         value: 0.0,
       },
       color: {
-        value: new Color(1, 1, 0),
+        value: new Color(1, 1, 1),
       },
       resolution: {
         value: new Vector2(size, size),
@@ -113,31 +194,27 @@ const Surface = () => {
         value: new Vector2(size / 2, size / 2),
       },
       map: {
-        value: null,
+        value: texture,
       },
       force: {
         value: 0,
       },
     };
 
-    textureLoader.load(assetURL, texture => {
-      uniforms.map.value = texture;
-
-      mat = new ShaderMaterial({
-        vertexShader,
-        fragmentShader,
-        uniforms,
-        transparent: true,
-      });
-
-      const plane = new Mesh(new PlaneBufferGeometry(1, 1, 24, 24), mat);
-
-      plane.position.z -= 0.68;
-
-      scene.add(plane);
-
-      animate();
+    mat = new ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms,
+      transparent: true,
     });
+
+    mat.uniforms.map.value.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+    const plane = new Mesh(new PlaneBufferGeometry(w, h, 24, 24), mat);
+
+    plane.position.z -= 0.72;
+
+    scene.add(plane);
 
     // Magic
 
@@ -149,7 +226,7 @@ const Surface = () => {
     const raycaster = new Raycaster();
 
     const targetPlane = new Mesh(
-      new PlaneGeometry(),
+      new PlaneGeometry(w, h),
       new MeshBasicMaterial({color: new Color(255, 0, 0)}),
     );
     targetPlane.visible = false;
@@ -157,7 +234,13 @@ const Surface = () => {
 
     scene.add(targetPlane);
 
-    const rect = container.getBoundingClientRect();
+    let rect = container.getBoundingClientRect();
+
+    const handleResize = () => {
+      let rect = container.getBoundingClientRect();
+    };
+
+    window.addEventListener('resize', handleResize);
 
     // Bind interaction
     const updatePointer = e => {
@@ -239,9 +322,13 @@ const Surface = () => {
       raf = requestAnimationFrame(animate);
     };
 
+    animate();
+
     return () => {
       // Cleanup
       cancelAnimationFrame(raf);
+      onEnd();
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   return <StyledTarget id="three-target"></StyledTarget>;

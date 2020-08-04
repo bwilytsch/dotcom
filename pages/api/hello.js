@@ -7,7 +7,32 @@ const status = {
   PROGRESS: 'PROGRESS',
   FINISEDH: 'FINISHED',
   REDACTED: 'REDACTED',
+  CODE: 'CODE',
 };
+
+export const experiments = [
+  {
+    title: 'Dynamic AABB Node Tree for Collision Detection',
+    description: '',
+    status: status.CODE,
+    url: 'https://ho1xz.csb.app/',
+    media: [{src: '', type: 'image'}],
+  },
+  {
+    title: 'Lissajous Curve',
+    description: '',
+    status: status.CODE,
+    url: 'https://codepen.io/bwilytsch/full/EMKRVM',
+    media: [{src: '', type: 'image'}],
+  },
+  {
+    title: 'KBDFans.com Stock Tracker',
+    description: '',
+    status: null,
+    url: 'https://csb-njvnq.netlify.app/',
+    media: [{src: '', type: 'image'}],
+  },
+];
 
 export const projects = [
   {

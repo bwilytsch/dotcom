@@ -94,10 +94,8 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <ASYNCGA id="UA-283964-1" />
-          <GTAHead id="GTM-W23G2N" />
         </Head>
         <body>
-          <GTABody id="GTM-W23G2N" />
           <Main />
           <NextScript />
         </body>

@@ -10,6 +10,6 @@ const StyledNavigation = styled.nav`
   padding: 2.4rem 0;
 `;
 
-const Navigation = () => <StyledNavigation>Scroll Down</StyledNavigation>;
+const Navigation = () => <StyledNavigation>...</StyledNavigation>;
 
 export default Navigation;

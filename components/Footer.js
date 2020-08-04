@@ -69,10 +69,6 @@ const Footer = () => {
           ))}
         </Grid>
       </StyledFooter>
-      <StyledCopyright>
-        v0.1 <Em />
-        {new Date().getFullYear().toString()}
-      </StyledCopyright>
     </Fragment>
   );
 };

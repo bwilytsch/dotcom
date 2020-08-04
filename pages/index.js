@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import React, {useState} from 'react';
 import styled, {keyframes} from 'styled-components';
 // UI Libarry
 import {
@@ -16,7 +17,7 @@ import {
 import {columnRange, Em, DisplayHeadline} from '../components/Typography';
 import {FlexGrid} from '../components/Grid';
 import Surface from '../components/Surface';
-import {projects} from './api/hello';
+import {projects, experiments} from './api/hello';
 import {viewports} from '../components/constants';
 
 // SVGs
@@ -32,7 +33,7 @@ const Display = styled.section`
   width: calc(100% - 1.6rem);
   height: 100%;
   max-height: auto;
-  margin: 0.8rem;
+  margin: 0.8rem 0.8rem 4.8rem 0.8rem;
   border-radius: var(--border-radius-m);
   background: black;
 
@@ -42,6 +43,27 @@ const Display = styled.section`
     margin: 0;
   }
 `;
+
+const DisplaySelectContainer = styled.div`
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: var(--border-radius-s);
+  margin: 0 0.8rem;
+  padding: 0 1.6rem 0 0;
+`;
+
+const DisplaySelect = styled.select`
+  box-sizing: content-box;
+  align-self: flex-start;
+  color: white;
+  font-size: 1.6rem;
+  padding: 1.2rem 1.6rem;
+  background-color: transparent;
+  border: none;
+  outline: none;
+`;
+
+const DisplayOption = styled.option``;
 
 const DisplayLabel = styled(Label)`
   color: white;
@@ -89,7 +111,11 @@ const DisplayCopy = styled.a`
     border-bottom: 1px solid var(--f-high);
   }
 
-  &:hover {
+  &[data-status='disabled'] {
+    cursor: not-allowed;
+  }
+
+  &:not([data-status='disabled']):hover {
     color: rgba(255, 255, 255, 1);
 
     ${DisplayArrow} {
@@ -97,30 +123,41 @@ const DisplayCopy = styled.a`
       animation: ${pointing} 1.2s linear infinite;
     }
   }
+
+  @media ${viewports.small()} {
+    line-height: 1.4em;
+  }
 `;
 
 const DisplayMeta = styled.span`
   padding-left: 0.4rem;
+  display: flex;
+  align-items: center;
+
+  @media ${viewports.small()} {
+    width: 100%;
+    justify-content: space-between;
+  }
 `;
 
 const DisplayStatus = styled.span`
   font-size: 1rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: white;
   padding: 0.4rem 0.8rem;
   margin: 0 1.2rem;
-  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.32);
   border-radius: var(--border-radius);
   display: inline-block;
+  flex: 0 0 auto;
 `;
 
 const DisplayPreview = styled.div`
   width: calc(100% - 4.8rem);
-  padding-bottom: calc(100% - 4.8rem);
-  border: 2px solid white;
+  padding-bottom: calc(50% - 4.8rem);
   position: relative;
   margin: 2.4rem;
-  grid-column: 1 / 2;
+  grid-column: 1 / 5;
   overflow: hidden;
 
   @media ${viewports.small()} {
@@ -133,7 +170,9 @@ const DisplayPreview = styled.div`
 
 const DisplayList = styled(FlexGrid)`
   grid-column: 2 /4;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 2rem 0 0 0;
 
   @media ${viewports.small()} {
     grid-column: inherit;
@@ -142,32 +181,62 @@ const DisplayList = styled(FlexGrid)`
 `;
 
 const hasURL = url => {
-  return url ? {href: url, target: '_blanked'} : {};
+  return url ? {href: url, target: '_blanked'} : {'data-status': 'disabled'};
+};
+
+const workMap = {
+  projects,
+  experiments,
 };
 
 export default function Home() {
+  const [work, setWork] = useState(projects);
+
+  const onSelect = e => {
+    const {value} = e.target;
+
+    if (workMap[value]) {
+      setWork(workMap[value]);
+    }
+  };
+
   return (
     <Main>
       <Display>
         <Grid>
           <DisplayLabel>
-            Bojan Wilytsch <br /> Creative Technologist • UX Engineer
+            Bojan Wilytsch <br /> UX Engineer
           </DisplayLabel>
           <DisplayLabel>
-            London <br /> UK
+            London, <br /> UK
           </DisplayLabel>
-        </Grid>
-        <Grid>
-          <DisplayHeadline from={2} to={5}>
-            Hello.
-          </DisplayHeadline>
+          <DisplayLabel style={{...columnRange(4)}}>
+            v0.1 <Em />
+            {new Date().getFullYear().toString()}
+          </DisplayLabel>
         </Grid>
         <Grid>
           <DisplayPreview>
-            <Surface />
+            <Surface ratio={[2, 1]} />
           </DisplayPreview>
           <DisplayList data-name="projects" cols={1}>
-            {projects.map((project, idx) => (
+            <section
+              style={{
+                alignSelf: 'flex-start',
+                color: 'white',
+                padding: '0 0.4rem',
+                fontSize: '1.4rem',
+                margin: '0 0 1.2rem 0',
+              }}>
+              Show me:
+              <DisplaySelectContainer>
+                <DisplaySelect name="work" onChange={onSelect}>
+                  <DisplayOption value="projects">Projects</DisplayOption>
+                  <DisplayOption value="experiments">Experiments</DisplayOption>
+                </DisplaySelect>
+              </DisplaySelectContainer>
+            </section>
+            {work.map((project, idx) => (
               <DisplayCopy key={idx} {...hasURL(project.url)}>
                 <DisplayMeta>
                   {project.title}
@@ -197,13 +266,6 @@ export default function Home() {
       </Grid>
       <Grid>
         <section>
-          <Label>Experiments</Label>
-          <Copy>
-            Dynamic AABB node tree. Fast & Performant Collision detection.{' '}
-            <Em />
-          </Copy>
-        </section>
-        <section>
           <Label>Professional</Label>
           <CopyHeadline>Awards</CopyHeadline>
           <Copy>
@@ -229,9 +291,11 @@ export default function Home() {
             Inter Typeface <Em />
             <a href="https://rsms.me/inter/">Link</a>
             <br />
-            NextJS by Vercel
+            NextJS
             <br />
             Styled Components
+            <br />
+            ThreeJS
           </Copy>
         </section>
       </Grid>
