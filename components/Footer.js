@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import styled from 'styled-components';
 import Grid from './Grid';
-import { viewports } from './constants';
+import {viewports} from './constants';
 
 const links = [
   {
@@ -17,7 +17,7 @@ const links = [
     url: '',
   },
   {
-    label: 'Space for thought madebybojan',
+    label: 'Codepen',
     url: '',
   },
 ];
@@ -39,7 +39,7 @@ const StyledFooter = styled.footer`
   border-radius: var(--border-radius-m);
 
   a {
-    padding: 2.4rem;
+    padding: 1.6rem;
     display: inline-block;
     border-radius: var(--border-radius-s);
 
@@ -60,15 +60,15 @@ const Footer = () => {
   return (
     <Fragment>
       <StyledFooter>
-        <Grid style={{ padding: '0.8rem' }}>
-          {links.map(({ label, url }, idx) => (
+        <Grid style={{padding: '0.8rem'}}>
+          {links.map(({label, url}, idx) => (
             <a href={url} key={idx}>
               {label}
             </a>
           ))}
         </Grid>
       </StyledFooter>
-      <StyledCopyright>Last update: {new Date().toString()}</StyledCopyright>
+      <StyledCopyright>{new Date().getFullYear().toString()}</StyledCopyright>
     </Fragment>
   );
 };

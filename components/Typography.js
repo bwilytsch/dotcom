@@ -1,7 +1,7 @@
-import React, { forwardRef } from 'react';
+import React, {forwardRef} from 'react';
 import NextLink from 'next/link';
-import styled, { css } from 'styled-components';
-import { viewports } from './constants';
+import styled, {css, keyframes} from 'styled-components';
+import {viewports} from './constants';
 
 // Grid based extension
 const gridStyle = css`
@@ -16,7 +16,6 @@ const gridStyle = css`
 export const Headline = styled.h1`
   font-size: calc(80vw / 6);
   font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 0.9em;
   color: var(--accent);
@@ -24,9 +23,23 @@ export const Headline = styled.h1`
   padding: 0;
 `;
 
+export const Em = () => `— `;
+
+export const fadeIn = keyframes`
+  0%{
+    opacity: 0
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
 export const DisplayHeadline = styled(Headline)`
   ${gridStyle}
-  color: white;
+  color: rgba(255,255,255, 0.24);
+  opacity: 0;
+  text-transform: none;
+  animation: ${fadeIn} 0.2s 0.24s linear forwards;
 `;
 
 export const Subheadline = styled.h2`

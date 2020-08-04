@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Navigation = styled.nav`
+const StyledNavigation = styled.nav`
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -10,4 +10,6 @@ const Navigation = styled.nav`
   padding: 2.4rem 0;
 `;
 
-export default () => <Navigation>Menu</Navigation>;
+const Navigation = () => <StyledNavigation>Menu</StyledNavigation>;
+
+export default Navigation;
