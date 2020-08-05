@@ -14,34 +14,38 @@ import {
   NearestFilter,
   Color,
   Vector2,
+  Vector3,
   TextureLoader,
   Texture,
+  Uniform,
   CanvasTexture,
   Raycaster,
   MeshBasicMaterial,
 } from 'three';
+import {lerp} from './utils';
+
+const setAttrs = (target, attrs) => {
+  Object.keys(attrs).forEach(key => {
+    target[key] = attrs[key];
+  });
+};
 
 const vertexShader = `
-  precision highp float;
-  uniform vec2 pointer;
-  uniform vec2 resolution;
+  uniform vec3 pointer;
+  uniform vec2 uPosition;
+  uniform float maxLength;
   uniform float force;
-  uniform float time;
   varying vec2 vUv;
-  varying float noise;
 
   void main(){
     vUv = uv;
-    vec3 pos = position;
+    vec3 pos = position.xyz;
+    pos.xy += uPosition;
 
-    float dist = distance(position.xy, pointer.xy);
+    float dist = distance(position, pointer) / maxLength;
+    float progress = smoothstep(dist, 1., force);
 
-    dist = clamp(0.0, 0.4, dist);
-    
-    float f = pow(dist, 2.) * force * normal.z;
-    pos.z -= smoothstep(0.0, 4., f);
-
-   noise = pos.z;
+    pos = mix(pos, pointer, progress);
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   }
@@ -49,17 +53,20 @@ const vertexShader = `
 
 const fragmentShader = `
   uniform vec3 color;
-  uniform float time;
-  uniform vec2 resolution;
-  uniform vec2 grid;
-  uniform vec2 pointer;
   varying vec2 vUv;
   uniform sampler2D map;
-  varying float noise;
+
+  float grid(vec2 st, float res){
+    vec2 grid = fract(st*res);
+    return (step(res, grid.x) * step(res, grid.y));
+  }
 
   void main(){
-    vec4 tex = texture2D(map, vUv + (noise * 0.1));
-    gl_FragColor = vec4(tex.xyz, 1.0);
+    vec2 grid_uv = vUv * 480.0;
+    // grid_uv.y *= 0.5;
+    float x = grid(grid_uv, 0.0543);
+    vec4 tex = texture2D(map, vUv);
+    gl_FragColor = vec4(1.0 - vec3(1.) * x, 0.5);
   }
 `;
 
@@ -73,6 +80,14 @@ const StyledTarget = styled.div`
   canvas {
     width: 100%;
     height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 `;
 
@@ -142,14 +157,14 @@ const Surface = ({ratio = [1, 1]}) => {
     const container = document.getElementById('three-target');
     const tex = new DynamicTexture();
 
-    tex.setSize(size * w * 2, size * h * 2);
+    tex.setSize(size * w, size * h);
 
-    tex.grid({
-      tileSize: 32,
-      color: '#555555',
-    });
+    // tex.grid({
+    //   tileSize: 24,
+    //   color: '#555555',
+    // });
 
-    tex.text('Hello.', {size: 240 * w});
+    // tex.text('Hello.', {size: 64 * w});
     // Clear container for hot-reload
     container.innerHTML = null;
 
@@ -161,6 +176,7 @@ const Surface = ({ratio = [1, 1]}) => {
 
     const scene = new Scene();
     const camera = new PerspectiveCamera(72, w / h, 0.001, 1000);
+    camera.position.z += 0.78;
 
     // Append to DOM
     container.appendChild(renderer.domElement);
@@ -171,30 +187,39 @@ const Surface = ({ratio = [1, 1]}) => {
     texture.minFilter = LinearFilter;
     texture.needsUpdate = true;
 
+    const getViewSize = () => {
+      const fovInRadians = (camera.fov * Math.PI) / 180;
+      const height = Math.abs(
+        camera.position.z * Math.tan(fovInRadians / 2) * 2,
+      );
+
+      return {width: height * camera.aspect, height};
+    };
+
+    const viewSize = getViewSize();
+
+    const maxLength = Math.sqrt(
+      (viewSize.width + 10) * (viewSize.width + 10) +
+        (viewSize.height + 10) * (viewSize.height + 10),
+    );
+
+    const force = new Uniform(0);
+    const pointer = new Vector3(0, 0, 0);
+    const maxForce = 0.2;
+    let targetForce = 0;
+
     const uniforms = {
-      time: {
-        value: 0.0,
-      },
-      color: {
-        value: new Color(1, 1, 1),
-      },
-      resolution: {
-        value: new Vector2(size, size),
-        type: 'v2',
-      },
-      grid: {
-        value: new Vector2(10, 10),
-        type: 'v2',
-      },
-      pointer: {
-        value: new Vector2(size / 2, size / 2),
-      },
-      map: {
-        value: texture,
-      },
-      force: {
-        value: 0,
-      },
+      color: new Uniform(new Color(1, 1, 1)),
+      pointer: new Uniform(pointer),
+      map: new Uniform(texture),
+      maxLength: new Uniform(maxLength),
+      force,
+      uPosition: new Uniform(
+        new Vector2(
+          -viewSize.width / 2 + (w * 1.13) / 2 + pointer.x,
+          -viewSize.height / 2 + (h * 1.13) / 2 + pointer.y,
+        ),
+      ),
     };
 
     mat = new ShaderMaterial({
@@ -204,31 +229,23 @@ const Surface = ({ratio = [1, 1]}) => {
       transparent: true,
     });
 
-    mat.uniforms.map.value.anisotropy = renderer.capabilities.getMaxAnisotropy();
-
-    const plane = new Mesh(new PlaneBufferGeometry(w, h, 24, 24), mat);
-
-    plane.position.z -= 0.72;
+    const plane = new Mesh(new PlaneBufferGeometry(w, h, 1, 1), mat);
 
     scene.add(plane);
 
     // Magic
+    const update = () => {
+      let change = lerp(force.value, targetForce, 0.1, 0.0001);
+
+      if (change !== 0) {
+        force.value += change;
+        force.needsUpdate = true;
+      }
+    };
 
     const render = () => {
       renderer.render(scene, camera);
     };
-
-    const pointer = new Vector2(0, 0);
-    const raycaster = new Raycaster();
-
-    const targetPlane = new Mesh(
-      new PlaneGeometry(w, h),
-      new MeshBasicMaterial({color: new Color(255, 0, 0)}),
-    );
-    targetPlane.visible = false;
-    targetPlane.position.z -= 0.68;
-
-    scene.add(targetPlane);
 
     let rect = container.getBoundingClientRect();
 
@@ -253,9 +270,7 @@ const Surface = ({ratio = [1, 1]}) => {
 
       pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
       pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
-
-      if (mat === null) return;
-      mat.uniforms.force.value = 3.0;
+      pointer.z = 0;
     };
 
     let pressed = false;
@@ -271,6 +286,7 @@ const Surface = ({ratio = [1, 1]}) => {
     const onStart = e => {
       updatePointer(e);
       pressed = true;
+      targetForce = maxForce;
       disableScroll();
       renderer.domElement.addEventListener('touchmove', updatePointer);
       renderer.domElement.addEventListener('mousemove', updatePointer);
@@ -278,10 +294,10 @@ const Surface = ({ratio = [1, 1]}) => {
 
     const onEnd = () => {
       pressed = false;
+      targetForce = 0;
       enableScroll();
       renderer.domElement.removeEventListener('touchmove', updatePointer);
       renderer.domElement.removeEventListener('mousemove', updatePointer);
-      pointer.set(-2, -2);
     };
 
     renderer.domElement.ontouchstart = onStart;
@@ -293,27 +309,8 @@ const Surface = ({ratio = [1, 1]}) => {
     renderer.domElement.onmouseleave = onEnd;
 
     const animate = () => {
-      raycaster.setFromCamera(pointer, camera);
-
-      if (pressed) {
-        const intersects = raycaster.intersectObjects([targetPlane]);
-
-        if (intersects.length > 0) {
-          const obj = intersects[0];
-          mat.uniforms.pointer.value.copy(obj.point);
-        } else {
-          if (mat.uniforms.force.value > 0) {
-            mat.uniforms.force.value -= 0.01;
-          }
-        }
-      } else {
-        if (mat.uniforms.force.value > 0) {
-          mat.uniforms.force.value -= 0.2;
-        }
-      }
+      update();
       render();
-
-      // mat.uniforms.time.value += 0.01;
 
       raf = requestAnimationFrame(animate);
     };
@@ -327,6 +324,7 @@ const Surface = ({ratio = [1, 1]}) => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   return <StyledTarget id="three-target"></StyledTarget>;
 };
 

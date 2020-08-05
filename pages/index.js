@@ -42,7 +42,7 @@ const Display = styled.section`
   @media ${viewports.small()} {
     border-radius: 0;
     width: 100%;
-    margin: 0;
+    margin: 0 0 2.4rem 0;
   }
 `;
 
@@ -99,8 +99,8 @@ const DisplayArrow = styled.span`
 const DisplayCopy = styled.a`
   display: flex;
   justify-content: space-between;
+  font-size: 2rem;
   align-items: center;
-  font-size: 1.4rem;
   width: 100%;
   color: rgba(255, 255, 255, 0.48);
   letter-spacing: 0.02em;
@@ -127,6 +127,7 @@ const DisplayCopy = styled.a`
   }
 
   @media ${viewports.small()} {
+    font-size: 1.4rem;
     line-height: 1.4em;
   }
 `;
@@ -155,11 +156,9 @@ const DisplayStatus = styled.span`
 `;
 
 const DisplayPreview = styled.div`
-  width: calc(100% - 4.8rem);
-  padding-bottom: calc(50% - 4.8rem);
+  width: 100%;
+  padding-bottom: 100%;
   position: relative;
-  margin: 2.4rem;
-  grid-column: 1 / 5;
   overflow: hidden;
 
   @media ${viewports.small()} {
@@ -171,15 +170,16 @@ const DisplayPreview = styled.div`
 `;
 
 const DisplayList = styled(FlexGrid)`
-  grid-column: 2 /4;
   justify-content: flex-start;
   align-items: flex-start;
   padding: 2rem 0 0 0;
   transition: height 0.24s;
+  width: 80%;
 
   @media ${viewports.small()} {
     grid-column: inherit;
     padding: 0 0 4.8rem 0;
+    width: 100%;
   }
 `;
 
@@ -214,7 +214,7 @@ const workMap = {
   experiments,
 };
 
-const Work = () => {
+const Work = ({style}) => {
   const [work, setWork] = useState(projects);
   const [changed, setChanged] = useState(false);
 
@@ -244,7 +244,7 @@ const Work = () => {
   }, [changed]);
 
   return (
-    <DisplayList data-name="projects" cols={1}>
+    <DisplayList data-name="projects" cols={1} style={style}>
       <section
         style={{
           alignSelf: 'flex-start',
@@ -283,6 +283,25 @@ const Work = () => {
   );
 };
 
+const DisplayHeroGrid = styled.div`
+  display: flex;
+  align-items: center;
+
+  @media ${viewports.small()} {
+    flex-direction: column;
+  }
+`;
+
+const DisplayHeroHalf = styled.div`
+  width: 50%;
+  padding: 0 2.4rem;
+  flex: 1 1 auto;
+
+  @media ${viewports.small()} {
+    width: 100%;
+  }
+`;
+
 export default function Home() {
   return (
     <Main>
@@ -299,12 +318,16 @@ export default function Home() {
             {new Date().getFullYear().toString()}
           </DisplayLabel>
         </Grid>
-        <Grid>
-          <DisplayPreview>
-            <Surface ratio={[2, 1]} />
-          </DisplayPreview>
-          <Work />
-        </Grid>
+        <DisplayHeroGrid>
+          <DisplayHeroHalf>
+            <DisplayPreview>
+              <Surface ratio={[1, 1]} />
+            </DisplayPreview>
+          </DisplayHeroHalf>
+          <DisplayHeroHalf>
+            <Work />
+          </DisplayHeroHalf>
+        </DisplayHeroGrid>
         <Navigation />
       </Display>
       <Grid>

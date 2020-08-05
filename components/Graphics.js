@@ -34,7 +34,7 @@ const rotate = keyframes`
     background-color: var(--accent);
     transform: rotate(360deg)
   }
-  21% {
+  25% {
     background-color: #c8c8c8;
     transform: rotate(360deg)
   }
