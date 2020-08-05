@@ -112,18 +112,14 @@ class DynamicTexture {
     this._ctx.fillRect(0, 0, this.domElement.width, this.domElement.height);
   }
   grid(
-    {width, height, tileSize, color} = {
-      width: 512,
-      height: 512,
+    {tileSize, color} = {
       tileSize: 16,
       color: '#FFFFFF',
     },
   ) {
     // Calculate Columns
-    const columnCount = Math.floor(width / tileSize);
-    const rowCount = Math.floor(height / tileSize);
-
-    console.log(rowCount, columnCount);
+    const columnCount = Math.floor(this.domElement.width / tileSize);
+    const rowCount = Math.floor(this.domElement.height / tileSize);
 
     this.setSize(columnCount * tileSize, rowCount * tileSize);
 
@@ -146,9 +142,9 @@ const Surface = ({ratio = [1, 1]}) => {
     const container = document.getElementById('three-target');
     const tex = new DynamicTexture();
 
+    tex.setSize(size * w * 2, size * h * 2);
+
     tex.grid({
-      width: size * w * 2,
-      height: size * h * 2,
       tileSize: 32,
       color: '#555555',
     });

@@ -1,6 +1,7 @@
 import Head from 'next/head';
-import React, {useState} from 'react';
+import React, {useState, useEffect, Fragment, useRef} from 'react';
 import styled, {keyframes} from 'styled-components';
+import gsap from 'gsap';
 // UI Libarry
 import {
   Headline,
@@ -19,6 +20,7 @@ import {FlexGrid} from '../components/Grid';
 import Surface from '../components/Surface';
 import {projects, experiments} from './api/hello';
 import {viewports} from '../components/constants';
+import {GraphicDial, GraphicGrid, GraphicInput} from '../components/Graphics';
 
 // SVGs
 import GraphicSVG from '../public/graphic.svg';
@@ -173,12 +175,35 @@ const DisplayList = styled(FlexGrid)`
   justify-content: flex-start;
   align-items: flex-start;
   padding: 2rem 0 0 0;
+  transition: height 0.24s;
 
   @media ${viewports.small()} {
     grid-column: inherit;
     padding: 0 0 4.8rem 0;
   }
 `;
+
+// Not sure if needed
+const StyledDisplayListInner = styled.div`
+  width: 100%;
+`;
+
+const DisplayListInner = ({onEnter = () => {}, children, ...restProps}) => {
+  const ele = useRef(null);
+  const prevHeight = useRef(null);
+
+  useEffect(() => {
+    if (prevHeight.current === ele.current.offsetHeight) return;
+    onEnter(ele.current.offsetHeight);
+    prevHeight.current = ele.current.offsetHeight;
+  }, [children]);
+
+  return (
+    <StyledDisplayListInner ref={ele} {...restProps}>
+      {children}
+    </StyledDisplayListInner>
+  );
+};
 
 const hasURL = url => {
   return url ? {href: url, target: '_blanked'} : {'data-status': 'disabled'};
@@ -189,23 +214,82 @@ const workMap = {
   experiments,
 };
 
-export default function Home() {
+const Work = () => {
   const [work, setWork] = useState(projects);
+  const [changed, setChanged] = useState(false);
 
   const onSelect = e => {
     const {value} = e.target;
 
     if (workMap[value]) {
       setWork(workMap[value]);
+      setChanged(true);
     }
   };
 
+  const getHeight = height => {
+    gsap.to('.display-list-wrapper', 0.24, {height});
+  };
+
+  useEffect(() => {
+    if (changed) {
+      setChanged(false);
+      gsap.fromTo(
+        '.list-node',
+        0.48,
+        {opacity: 0, x: 10},
+        {opacity: 1, x: 0, stagger: 0.1},
+      );
+    }
+  }, [changed]);
+
+  return (
+    <DisplayList data-name="projects" cols={1}>
+      <section
+        style={{
+          alignSelf: 'flex-start',
+          color: 'white',
+          padding: '0 0.4rem',
+          fontSize: '1.4rem',
+          margin: '0 0 1.2rem 0',
+        }}>
+        Show me:
+        <DisplaySelectContainer>
+          <DisplaySelect name="work" onChange={onSelect}>
+            <DisplayOption value="projects">Projects</DisplayOption>
+            <DisplayOption value="experiments">Experiments</DisplayOption>
+          </DisplaySelect>
+        </DisplaySelectContainer>
+      </section>
+      <div className="display-list-wrapper" style={{width: '100%'}}>
+        <DisplayListInner onEnter={getHeight}>
+          {work.map((project, idx) => (
+            <DisplayCopy
+              key={idx}
+              {...hasURL(project.url)}
+              className={'list-node'}>
+              <DisplayMeta>
+                {project.title}
+                {project.status && (
+                  <DisplayStatus>{project.status}</DisplayStatus>
+                )}
+              </DisplayMeta>
+              <DisplayArrow>⟶</DisplayArrow>
+            </DisplayCopy>
+          ))}
+        </DisplayListInner>
+      </div>
+    </DisplayList>
+  );
+};
+
+export default function Home() {
   return (
     <Main>
       <Display>
         <Grid>
           <DisplayLabel>
-            Bojan Wilytsch <br /> UX Engineer
+            Bojan <br /> Wilytsch
           </DisplayLabel>
           <DisplayLabel>
             London, <br /> UK
@@ -219,35 +303,7 @@ export default function Home() {
           <DisplayPreview>
             <Surface ratio={[2, 1]} />
           </DisplayPreview>
-          <DisplayList data-name="projects" cols={1}>
-            <section
-              style={{
-                alignSelf: 'flex-start',
-                color: 'white',
-                padding: '0 0.4rem',
-                fontSize: '1.4rem',
-                margin: '0 0 1.2rem 0',
-              }}>
-              Show me:
-              <DisplaySelectContainer>
-                <DisplaySelect name="work" onChange={onSelect}>
-                  <DisplayOption value="projects">Projects</DisplayOption>
-                  <DisplayOption value="experiments">Experiments</DisplayOption>
-                </DisplaySelect>
-              </DisplaySelectContainer>
-            </section>
-            {work.map((project, idx) => (
-              <DisplayCopy key={idx} {...hasURL(project.url)}>
-                <DisplayMeta>
-                  {project.title}
-                  {project.status && (
-                    <DisplayStatus>{project.status}</DisplayStatus>
-                  )}
-                </DisplayMeta>
-                <DisplayArrow>⟶</DisplayArrow>
-              </DisplayCopy>
-            ))}
-          </DisplayList>
+          <Work />
         </Grid>
         <Navigation />
       </Display>
@@ -299,14 +355,10 @@ export default function Home() {
           </Copy>
         </section>
       </Grid>
-      <FlexGrid>
-        <GraphicSVG
-          style={{
-            display: 'inline-block',
-            width: '238px',
-            margin: '2.4rem auto 6.4rem auto',
-          }}
-        />
+      <FlexGrid style={{flexDirection: 'row', margin: '2.4rem  0 6.4rem 0'}}>
+        <GraphicGrid />
+        <GraphicDial />
+        <GraphicInput />
       </FlexGrid>
       <Footer />
     </Main>

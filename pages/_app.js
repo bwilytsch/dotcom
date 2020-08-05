@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import 'normalize.css';
 import Head from 'next/head';
 import '../styles/globals.scss';
+import '../styles/animations.scss';
 
 const meta = {
   title: 'Fnatic x Dwarf Factory',

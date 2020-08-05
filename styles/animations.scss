@@ -1,0 +1,14 @@
+.list-node-enter {
+  opacity: 0;
+}
+.list-node-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+.list-node-exit {
+  opacity: 1;
+}
+.list-node-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
