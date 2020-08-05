@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import 'normalize.css';
 import Head from 'next/head';
 import '../styles/globals.scss';
@@ -7,14 +7,14 @@ import '../styles/animations.scss';
 const meta = {
   title: 'Bojan Wilytsch - UX Engineer',
   desc: 'Personal site of Bojan Wilytsch',
-  image: '',
+  image: 'https://madebybojan.com/og-image.jpg',
   imageAlt: 'Bojan Wilytsch - Personal Site',
   url: 'https://madebybojan.com/',
   twitterHandle: '@bwilytsch',
   fbAppId: '',
 };
 
-const SocialMeta = ({meta}) => {
+const SocialMeta = ({ meta }) => {
   return (
     <Fragment>
       <meta property="og:title" content={meta.title} key="title" />
@@ -33,7 +33,7 @@ const SocialMeta = ({meta}) => {
 };
 
 // Import SEO tools from work :D
-function MyApp({Component, pageProps}) {
+function MyApp({ Component, pageProps }) {
   return (
     <Fragment>
       <Head>
