@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import {
   PerspectiveCamera,
@@ -23,6 +23,8 @@ import {
   MeshBasicMaterial,
 } from 'three';
 import {lerp} from './utils';
+import gsap from 'gsap';
+import {projects, experiments} from '../pages/api/hello';
 
 const setAttrs = (target, attrs) => {
   Object.keys(attrs).forEach(key => {
@@ -52,9 +54,9 @@ const vertexShader = `
 `;
 
 const fragmentShader = `
-  uniform vec3 color;
   varying vec2 vUv;
   uniform sampler2D map;
+  uniform float showImage;
 
   float grid(vec2 st, float res){
     vec2 grid = fract(st*res);
@@ -62,11 +64,17 @@ const fragmentShader = `
   }
 
   void main(){
-    vec2 grid_uv = vUv * 480.0;
-    // grid_uv.y *= 0.5;
-    float x = grid(grid_uv, 0.0543);
-    vec4 tex = texture2D(map, vUv);
-    gl_FragColor = vec4(1.0 - vec3(1.) * x, 0.5);
+     vec4 color = vec4(0.);
+  
+    if (showImage == 1.){
+      color = texture2D(map, vUv);
+    } else {
+     vec2 grid_uv = vUv * 480.0;
+     float x = grid(grid_uv, 0.0543);
+     color = vec4(1.0 - vec3(1.) * x, 0.5); 
+    }
+
+    gl_FragColor = vec4(color);
   }
 `;
 
@@ -149,9 +157,11 @@ class DynamicTexture {
   }
 }
 
-const Surface = ({ratio = [1, 1]}) => {
+const Surface = ({ratio = [1, 1], projectId = null}) => {
+  const textureSwitcher = useRef(null);
+
   useEffect(() => {
-    const size = 512;
+    const size = 1024;
 
     const [w, h] = ratio;
     const container = document.getElementById('three-target');
@@ -213,6 +223,7 @@ const Surface = ({ratio = [1, 1]}) => {
       pointer: new Uniform(pointer),
       map: new Uniform(texture),
       maxLength: new Uniform(maxLength),
+      showImage: new Uniform(0),
       force,
       uPosition: new Uniform(
         new Vector2(
@@ -255,8 +266,14 @@ const Surface = ({ratio = [1, 1]}) => {
 
     window.addEventListener('resize', handleResize);
 
+    // Pre-load Image Textures
+    const textureLoader = new TextureLoader();
+
     // Bind interaction
     const updatePointer = e => {
+      e.preventDefault();
+      e.stopPropagation();
+
       let clientX = 0;
       let clientY = 0;
 
@@ -287,26 +304,34 @@ const Surface = ({ratio = [1, 1]}) => {
       updatePointer(e);
       pressed = true;
       targetForce = maxForce;
+      renderer.domElement.addEventListener('mousemove', updatePointer);
+      renderer.domElement.addEventListener('mouseup', onEnd);
+    };
+
+    const onTouchStart = e => {
       disableScroll();
       renderer.domElement.addEventListener('touchmove', updatePointer);
-      renderer.domElement.addEventListener('mousemove', updatePointer);
+      renderer.domElement.addEventListener('touchend', onTouchEnd);
+      onStart(e);
     };
 
     const onEnd = () => {
       pressed = false;
       targetForce = 0;
-      enableScroll();
-      renderer.domElement.removeEventListener('touchmove', updatePointer);
       renderer.domElement.removeEventListener('mousemove', updatePointer);
+      renderer.domElement.removeEventListener('mouseup', onEnd);
     };
 
-    renderer.domElement.ontouchstart = onStart;
-    renderer.domElement.ontouchend = onEnd;
+    const onTouchEnd = e => {
+      enableScroll();
+      renderer.domElement.removeEventListener('touchmove', updatePointer);
+      renderer.domElement.removeEventListener('touchend', onTouchEnd);
+      onEnd();
+    };
 
-    renderer.domElement.onmousedown = onStart;
-    renderer.domElement.onmouseup = onEnd;
-
-    renderer.domElement.onmouseleave = onEnd;
+    renderer.domElement.addEventListener('touchstart', onTouchStart);
+    renderer.domElement.addEventListener('mousedown', onStart);
+    renderer.domElement.addEventListener('mouseleave', onEnd);
 
     const animate = () => {
       update();
@@ -317,13 +342,103 @@ const Surface = ({ratio = [1, 1]}) => {
 
     animate();
 
+    let textures = [];
+
+    const loadAllTextures = (arr, callback = () => {}) => {
+      if (arr.length === 0) return;
+
+      const buffer = [];
+      const len = arr.length;
+
+      const loadTexture = index => {
+        const obj = arr[index];
+
+        textureLoader.load(obj.url, tex => {
+          // Process
+          tex.generateMipmaps = false;
+          tex.wrapS = texture.wrapT = ClampToEdgeWrapping;
+          tex.minFilter = LinearFilter;
+          tex.needsUpdate = true;
+          tex._projectId = obj._id;
+
+          buffer.push(tex);
+
+          if (index === len - 1) {
+            callback(buffer);
+          } else {
+            loadTexture(index + 1);
+          }
+        });
+      };
+
+      loadTexture(0);
+    };
+
+    const changeTexture = id => {
+      if (!id) return;
+
+      const results = textures.filter(texture => texture._projectId === id);
+
+      if (results.length === 0 && mat.uniforms.showImage.value === 0) return;
+
+      gsap.to('#three-target', 0.24, {
+        opacity: 0,
+        scaleX: 0.98,
+        scaleY: 0.98,
+        onComplete: () => {
+          if (mat.uniforms.showImage.value === 0) {
+            mat.uniforms.showImage.value = 1;
+          }
+
+          if (results.length === 0) {
+            // Default back to grid
+            mat.uniforms.showImage.value = 0;
+          } else {
+            // Swap texture
+            mat.uniforms.map.value = results[0];
+          }
+
+          gsap.to('#three-target', 0.48, {opacity: 1, scaleX: 1, scaleY: 1});
+        },
+      });
+    };
+
+    // Unblock main thread
+    setTimeout(() => {
+      // Buffer Textures
+      loadAllTextures(
+        [...projects, ...experiments]
+          .map(({media, _id}) => ({url: media[0].src, _id}))
+          .filter(({url}) => url.length > 0),
+        arr => {
+          textures = arr;
+          // Show image
+          gsap.to('#three-target', 0.48, {opacity: 1});
+        },
+      );
+    }, 0);
+
+    textureSwitcher.current = changeTexture;
+
     return () => {
       // Cleanup
       cancelAnimationFrame(raf);
       onEnd();
       window.removeEventListener('resize', handleResize);
+      renderer.domElement.removeEventListener('touchstart', onTouchStart);
+      renderer.domElement.removeEventListener('mousedown', onStart);
+      renderer.domElement.removeEventListener('mouseleave', onEnd);
     };
   }, []);
+
+  useEffect(() => {
+    if (
+      textureSwitcher.current &&
+      typeof textureSwitcher.current === 'function'
+    ) {
+      textureSwitcher.current(projectId);
+    }
+  }, [projectId]);
 
   return <StyledTarget id="three-target"></StyledTarget>;
 };

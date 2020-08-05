@@ -1,7 +1,4 @@
-// Write API like Structure to deliver data
-
-// About route
-// Work route
+import {v4 as uuidv4} from 'uuid';
 
 const status = {
   PROGRESS: 'PROGRESS',
@@ -17,6 +14,7 @@ export const experiments = [
     status: status.CODE,
     url: 'https://ho1xz.csb.app/',
     media: [{src: '', type: 'image'}],
+    _id: uuidv4(),
   },
   {
     title: 'Lissajous Curve',
@@ -24,6 +22,7 @@ export const experiments = [
     status: status.CODE,
     url: 'https://codepen.io/bwilytsch/full/EMKRVM',
     media: [{src: '', type: 'image'}],
+    _id: uuidv4(),
   },
   {
     title: 'KBDFans.com Stock Tracker',
@@ -31,6 +30,7 @@ export const experiments = [
     status: null,
     url: 'https://csb-njvnq.netlify.app/',
     media: [{src: '', type: 'image'}],
+    _id: uuidv4(),
   },
 ];
 
@@ -41,6 +41,7 @@ export const projects = [
     status: status.PROGRESS,
     url: '',
     media: [{src: '', type: 'image'}],
+    _id: uuidv4(),
   },
   {
     title: 'VR — Oculus Venus',
@@ -48,7 +49,8 @@ export const projects = [
     status: null,
     url:
       'https://www.oculus.com/experiences/quest/2464560730245504/?locale=en_US',
-    media: [{src: '', type: 'image'}],
+    media: [{src: './projects/fnatic-df.jpg', type: 'image'}],
+    _id: uuidv4(),
   },
   {
     title: 'VR — Oculus Browser',
@@ -56,14 +58,16 @@ export const projects = [
     status: null,
     url:
       'https://www.oculus.com/experiences/gear-vr/1257988667656584/?locale=en_GB',
-    media: [{src: '', type: 'image'}],
+    media: [{src: './projects/dash-ar.jpg', type: 'image'}],
+    _id: uuidv4(),
   },
   {
     title: 'AR — Fnatic DASH Mousepad',
     description: '',
     status: null,
     url: 'https://dash-ar.fnatic.com/',
-    media: [{src: '', type: 'image'}],
+    media: [{src: './projects/dash-ar.jpg', type: 'image'}],
+    _id: uuidv4(),
   },
   {
     title: 'WatchOS — The Weather Channel',
@@ -71,7 +75,8 @@ export const projects = [
     status: null,
     url:
       'https://apps.apple.com/us/app/weather-the-weather-channel/id295646461#?platform=appleWatch',
-    media: [{src: '', type: 'image'}],
+    media: [{src: './projects/dash-ar.jpg', type: 'image'}],
+    _id: uuidv4(),
   },
   {
     title: 'AR & VR — The Future of Work',
@@ -79,5 +84,6 @@ export const projects = [
     status: status.REDACTED,
     url: '',
     media: [{src: '', type: 'image'}],
+    _id: uuidv4(),
   },
 ];

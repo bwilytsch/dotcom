@@ -22,15 +22,23 @@ import {projects, experiments} from './api/hello';
 import {viewports} from '../components/constants';
 import {GraphicDial, GraphicGrid, GraphicInput} from '../components/Graphics';
 
-// SVGs
-import GraphicSVG from '../public/graphic.svg';
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+`;
 
 const Main = styled.main`
   min-height: 100%;
   width: 100%;
+  opacity: 0;
+  animation: ${fadeIn} 1s linear forwards;
 `;
 
-const Display = styled.section`
+const StyledDisplay = styled.section`
   box-sizing: border-box;
   width: calc(100% - 1.6rem);
   height: 100%;
@@ -126,7 +134,7 @@ const DisplayCopy = styled.a`
     }
   }
 
-  @media ${viewports.small()} {
+  @media ${viewports.medium()} {
     font-size: 1.4rem;
     line-height: 1.4em;
   }
@@ -214,11 +222,11 @@ const workMap = {
   experiments,
 };
 
-const Work = ({style}) => {
+const Work = ({style, handleSelect}) => {
   const [work, setWork] = useState(projects);
   const [changed, setChanged] = useState(false);
 
-  const onSelect = e => {
+  const handleChange = e => {
     const {value} = e.target;
 
     if (workMap[value]) {
@@ -236,7 +244,7 @@ const Work = ({style}) => {
       setChanged(false);
       gsap.fromTo(
         '.list-node',
-        0.48,
+        0.32,
         {opacity: 0, x: 10},
         {opacity: 1, x: 0, stagger: 0.1},
       );
@@ -255,7 +263,7 @@ const Work = ({style}) => {
         }}>
         Show me:
         <DisplaySelectContainer>
-          <DisplaySelect name="work" onChange={onSelect}>
+          <DisplaySelect name="work" onChange={handleChange}>
             <DisplayOption value="projects">Projects</DisplayOption>
             <DisplayOption value="experiments">Experiments</DisplayOption>
           </DisplaySelect>
@@ -265,8 +273,11 @@ const Work = ({style}) => {
         <DisplayListInner onEnter={getHeight}>
           {work.map((project, idx) => (
             <DisplayCopy
-              key={idx}
+              key={project._id}
               {...hasURL(project.url)}
+              onMouseEnter={() => {
+                handleSelect(project._id);
+              }}
               className={'list-node'}>
               <DisplayMeta>
                 {project.title}
@@ -302,34 +313,47 @@ const DisplayHeroHalf = styled.div`
   }
 `;
 
+const Display = () => {
+  const [selectedId, setSelectedId] = useState(null);
+
+  const handleSelect = id => {
+    if (selectedId === id) return;
+    setSelectedId(id);
+  };
+
+  return (
+    <StyledDisplay>
+      <Grid>
+        <DisplayLabel>
+          Bojan <br /> Wilytsch
+        </DisplayLabel>
+        <DisplayLabel>
+          London, <br /> UK
+        </DisplayLabel>
+        <DisplayLabel style={{...columnRange(4)}}>
+          v0.1 <Em />
+          {new Date().getFullYear().toString()}
+        </DisplayLabel>
+      </Grid>
+      <DisplayHeroGrid>
+        <DisplayHeroHalf>
+          <DisplayPreview>
+            <Surface ratio={[1, 1]} projectId={selectedId} />
+          </DisplayPreview>
+        </DisplayHeroHalf>
+        <DisplayHeroHalf>
+          <Work handleSelect={handleSelect} />
+        </DisplayHeroHalf>
+      </DisplayHeroGrid>
+      <Navigation />
+    </StyledDisplay>
+  );
+};
+
 export default function Home() {
   return (
     <Main>
-      <Display>
-        <Grid>
-          <DisplayLabel>
-            Bojan <br /> Wilytsch
-          </DisplayLabel>
-          <DisplayLabel>
-            London, <br /> UK
-          </DisplayLabel>
-          <DisplayLabel style={{...columnRange(4)}}>
-            v0.1 <Em />
-            {new Date().getFullYear().toString()}
-          </DisplayLabel>
-        </Grid>
-        <DisplayHeroGrid>
-          <DisplayHeroHalf>
-            <DisplayPreview>
-              <Surface ratio={[1, 1]} />
-            </DisplayPreview>
-          </DisplayHeroHalf>
-          <DisplayHeroHalf>
-            <Work />
-          </DisplayHeroHalf>
-        </DisplayHeroGrid>
-        <Navigation />
-      </Display>
+      <Display />
       <Grid>
         <Headline>About</Headline>
       </Grid>

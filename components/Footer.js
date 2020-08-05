@@ -51,8 +51,13 @@ const StyledFooter = styled.footer`
   }
 
   @media ${viewports.small('max')} {
+    padding: 1.2rem 0;
+
+    a {
+      padding: 0.4rem 1.6rem;
+    }
     a:not(:last-child) {
-      margin-bottom: 2.4rem;
+      margin-bottom: 0rem;
     }
   }
 `;

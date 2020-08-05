@@ -5,13 +5,12 @@ import '../styles/globals.scss';
 import '../styles/animations.scss';
 
 const meta = {
-  title: 'Fnatic x Dwarf Factory',
-  desc: 'Limited Edition Artisan Keycap Collection from Fnatic',
-  //  image: 'https://img.fnatic.com/0e51d72a-2822-4396-b12f-640341d63993.jpg',
-  image: 'https://img.fnatic.com/964ba6e1-0a9b-45a2-b107-992d61238608.jpg',
-  imageAlt: 'Fnatic x Dwarf Factory',
-  url: 'https://fnatic.com/keycaps',
-  twitterHandle: '@fnatic',
+  title: 'Bojan Wilytsch - UX Engineer',
+  desc: 'Personal site of Bojan Wilytsch',
+  image: '',
+  imageAlt: 'Bojan Wilytsch - Personal Site',
+  url: 'https://madebybojan.com/',
+  twitterHandle: '@bwilytsch',
   fbAppId: '',
 };
 
@@ -61,13 +60,13 @@ function MyApp({Component, pageProps}) {
           content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5"
         />
         <meta name="theme-color" content="#FFFFFF" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.webmanifest" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=auto"
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=auto"
           rel="stylesheet"
         />
       </Head>
