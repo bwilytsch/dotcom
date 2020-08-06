@@ -63,12 +63,15 @@ const DisplayTouchTitle = styled.h3`
   margin: 2.4rem 0 0 0;
   font-size: 1.4rem;
   font-weight: 500;
-  display: none;
+  visibility: hidden;
+  opacity: 0;
 
   @media ${viewports.small()} {
     min-height: 4.8rem;
     text-align: center;
     display: block;
+    visibility: visible;
+    opacity: 1;
   }
 `;
 
@@ -198,7 +201,9 @@ const DisplayArrow = styled.span`
   opacity: 0;
 
   @media ${viewports.small()} {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    user-select: none;
   }
 `;
 

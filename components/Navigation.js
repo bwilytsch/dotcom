@@ -1,4 +1,5 @@
 import React from 'react';
+import { viewports } from './constants';
 import styled, { keyframes } from 'styled-components';
 
 const leftDot = keyframes`
@@ -10,7 +11,7 @@ const leftDot = keyframes`
  5%, 65% {
      width: 400%;
      background-color: rgba(255, 255, 255, 1);
-     transform: translate(0, -56%) rotate(-30deg);
+     transform: translate(0, -2px) rotate(-30deg);
  }`;
 
 const rightDot = keyframes`
@@ -22,7 +23,7 @@ const rightDot = keyframes`
   5%, 65% {
     width: 400%;
     background-color: rgba(255, 255, 255, 1);
-    transform: translate(-66%, -56%) rotate(30deg);
+    transform: translate(-10px, -2px) rotate(30deg);
   }
 `;
 
@@ -37,9 +38,9 @@ const centerDot = keyframes`
 
 const DotAnimation = styled.div`
   display: inline-block;
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 0.2rem;
+  width: 4px;
+  height: 4px;
+  border-radius: 2px;
   position: relative;
   animation: ${centerDot} 10s linear infinite;
 
@@ -50,7 +51,7 @@ const DotAnimation = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    border-radius: 0.5em;
+    border-radius: 2px;
     animation: ${leftDot} 10s linear infinite;
   }
 
@@ -60,7 +61,7 @@ const DotAnimation = styled.div`
     height: 100%;
     right: 0;
     top: 0;
-    border-radius: 0.5em;
+    border-radius: 2px;
     transition: all 0.12s;
     animation: ${rightDot} 10s linear infinite;
   }
