@@ -36,11 +36,6 @@ const Main = styled.main`
   width: 100%;
   opacity: 0;
   animation: ${fadeIn} 1s linear forwards;
-
-  @media ${viewports.large('min')} {
-    max-width: 134rem;
-    margin: 4.8rem auto 0 auto;
-  }
 `;
 
 const DisplayTouch = styled.div`
@@ -289,10 +284,6 @@ const DisplayList = styled(FlexGrid)`
   transition: height 0.24s;
   width: 80%;
 
-  @media ${viewports.medium()} {
-    width: 92%;
-  }
-
   @media ${viewports.small()} {
     grid-column: inherit;
     padding: 0;
@@ -522,9 +513,10 @@ export default function Home() {
           formerly Facebook, Oculus and for Google.
         </Subheadline>
       </Grid>
+      <Grid cols={1}></Grid>
+      <Label>Professional</Label>
       <Grid cols={2}>
         <section>
-          <Label>Professional</Label>
           <CopyHeadline>Experience</CopyHeadline>
           <Copy>
             Creative Technologist <Em /> Fnatic <br />
@@ -534,7 +526,6 @@ export default function Home() {
           </Copy>
         </section>
         <section>
-          <Label>Recognition</Label>
           <CopyHeadline>Awards</CopyHeadline>
           <Copy>
             Develeoper Awards - Awwwards <br />
