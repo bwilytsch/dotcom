@@ -1,6 +1,6 @@
 import Head from 'next/head';
-import React, { useState, useEffect, Fragment, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, {useState, useEffect, Fragment, useRef} from 'react';
+import styled, {keyframes, css} from 'styled-components';
 import gsap from 'gsap';
 // UI Libarry
 import {
@@ -15,12 +15,12 @@ import {
   Navigation,
 } from '../components';
 
-import { columnRange, Em, DisplayHeadline } from '../components/Typography';
-import { FlexGrid } from '../components/Grid';
+import {columnRange, Em, DisplayHeadline} from '../components/Typography';
+import {FlexGrid} from '../components/Grid';
 import Surface from '../components/Surface';
-import { projects, experiments } from './api/hello';
-import { viewports } from '../components/constants';
-import { GraphicDial, GraphicGrid, GraphicInput } from '../components/Graphics';
+import {projects, experiments} from './api/hello';
+import {viewports} from '../components/constants';
+import {GraphicDial, GraphicGrid, GraphicInput} from '../components/Graphics';
 
 const fadeIn = keyframes`
   0% {
@@ -38,6 +38,78 @@ const Main = styled.main`
   animation: ${fadeIn} 1s linear forwards;
 `;
 
+const DisplayTouch = styled.div`
+  display: none;
+  width: 100%;
+
+  @media ${viewports.medium()} {
+    display: block;
+  }
+`;
+
+const DisplayTouchTitle = styled.h3`
+  color: white;
+  margin: 2.4rem 0 0 0;
+  font-size: 1.4rem;
+  font-weight: 500;
+  display: none;
+
+  @media ${viewports.small()} {
+    min-height: 4.8rem;
+    text-align: center;
+    display: block;
+  }
+`;
+
+const DisplayTouchControls = styled.div`
+  display: grid;
+  width: 100%;
+  height: 5.6rem;
+  grid-template-columns: 5.6rem 5.6rem auto;
+  column-gap: 1.2rem;
+  margin: 1.2rem 0 3.2rem 0;
+`;
+
+const displayButtonStyle = `
+  width: 100%;
+  height: 100%;
+  font-size: 1.4rem;
+  border: 2px solid rgba(255, 255, 255, 0.24);
+  color: white;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4em;
+  transition: all 0.12s;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:not([data-status='disabled']) {
+    &:hover {
+      border: 2px solid rgba(255, 255, 255, 1);
+    }
+    &:active {
+      transform: scale(0.92);
+    }
+  }
+
+  &[data-status="disabled"] {
+    cursor: not-allowed;
+  }
+
+`;
+
+const DisplayButton = styled.button`
+  ${displayButtonStyle}
+`;
+
+const DisplayButtonLink = styled.a`
+  ${displayButtonStyle}
+`;
+
 const StyledDisplay = styled.section`
   box-sizing: border-box;
   width: calc(100% - 1.6rem);
@@ -51,6 +123,18 @@ const StyledDisplay = styled.section`
     border-radius: 0;
     width: 100%;
     margin: 0 0 2.4rem 0;
+  }
+`;
+
+const DisplaySelectWrapper = styled.section`
+  align-self: flex-start;
+  color: white;
+  padding 0 0.4rem;
+  font-size: 1.4rem;
+  margin: 0 0 1.2rem 0;
+
+  @media ${viewports.small()} {
+    align-self: center;
   }
 `;
 
@@ -71,6 +155,7 @@ const DisplaySelect = styled.select`
   background-color: transparent;
   border: none;
   outline: none;
+  -moz-appearance: none;
 `;
 
 const DisplayOption = styled.option`
@@ -139,6 +224,15 @@ const DisplayCopy = styled.a`
   @media ${viewports.medium()} {
     font-size: 1.4rem;
     line-height: 1.4em;
+
+    &.active {
+      color: rgba(255, 255, 255, 1);
+
+      ${DisplayArrow} {
+        opacity: 1;
+        animation: ${pointing} 1.2s linear infinite;
+      }
+    }
   }
 `;
 
@@ -163,6 +257,10 @@ const DisplayStatus = styled.span`
   border-radius: var(--border-radius);
   display: inline-block;
   flex: 0 0 auto;
+
+  @media ${viewports.small()} {
+    margin: 0.4rem 1.2rem;
+  }
 `;
 
 const DisplayPreview = styled.div`
@@ -188,8 +286,16 @@ const DisplayList = styled(FlexGrid)`
 
   @media ${viewports.small()} {
     grid-column: inherit;
-    padding: 0 0 4.8rem 0;
+    padding: 0;
     width: 100%;
+  }
+`;
+
+const DisplayListWrapper = styled.div`
+  width: 100%;
+
+  @media ${viewports.small()} {
+    display: none;
   }
 `;
 
@@ -198,14 +304,27 @@ const StyledDisplayListInner = styled.div`
   width: 100%;
 `;
 
-const DisplayListInner = ({ onEnter = () => {}, children, ...restProps }) => {
+const DisplayListInner = ({onEnter = () => {}, children, ...restProps}) => {
   const ele = useRef(null);
   const prevHeight = useRef(null);
 
-  useEffect(() => {
-    if (prevHeight.current === ele.current.offsetHeight) return;
+  const setHeight = () => {
     onEnter(ele.current.offsetHeight);
     prevHeight.current = ele.current.offsetHeight;
+  };
+
+  useEffect(() => {
+    // Cover case when switching viewports
+    window.addEventListener('resize', setHeight);
+
+    return () => {
+      window.removeEventListener('resize', setHeight);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (prevHeight.current === ele.current.offsetHeight) return;
+    setHeight();
   }, [children]);
 
   return (
@@ -216,9 +335,7 @@ const DisplayListInner = ({ onEnter = () => {}, children, ...restProps }) => {
 };
 
 const hasURL = url => {
-  return url
-    ? { href: url, target: '_blanked' }
-    : { 'data-status': 'disabled' };
+  return url ? {href: url, target: '_blanked'} : {'data-status': 'disabled'};
 };
 
 const workMap = {
@@ -226,22 +343,39 @@ const workMap = {
   experiments,
 };
 
-const Work = ({ style, handleSelect }) => {
+const Work = ({style, handleSelect}) => {
   const [work, setWork] = useState(projects);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [changed, setChanged] = useState(false);
 
   const handleChange = e => {
-    const { value } = e.target;
+    const {value} = e.target;
 
     if (workMap[value]) {
       setWork(workMap[value]);
       setChanged(true);
+      setActiveIndex(0);
     }
   };
 
   const getHeight = height => {
-    gsap.to('.display-list-wrapper', 0.24, { height });
+    gsap.to('.display-list-wrapper', 0.24, {height});
   };
+
+  const increment = () => {
+    setActiveIndex(state => (state + 1) % work.length);
+  };
+
+  const decrement = () => {
+    setActiveIndex(state => (state === 0 ? work.length - 1 : state - 1));
+  };
+
+  useEffect(() => {
+    const project = work[activeIndex];
+    if (project) {
+      handleSelect(project._id);
+    }
+  }, [activeIndex]);
 
   useEffect(() => {
     if (changed) {
@@ -249,23 +383,17 @@ const Work = ({ style, handleSelect }) => {
       gsap.fromTo(
         '.list-node',
         0.32,
-        { opacity: 0, x: 10 },
-        { opacity: 1, x: 0, stagger: 0.1 },
+        {opacity: 0, x: 10},
+        {opacity: 1, x: 0, stagger: 0.1},
       );
     }
   }, [changed]);
 
+  const activeProject = work[activeIndex];
+
   return (
     <DisplayList data-name="projects" cols={1} style={style}>
-      <section
-        style={{
-          alignSelf: 'flex-start',
-          color: 'white',
-          padding: '0 0.4rem',
-          fontSize: '1.4rem',
-          margin: '0 0 1.2rem 0',
-        }}
-      >
+      <DisplaySelectWrapper>
         Show me:
         <DisplaySelectContainer>
           <DisplaySelect name="work" onChange={handleChange}>
@@ -273,8 +401,8 @@ const Work = ({ style, handleSelect }) => {
             <DisplayOption value="experiments">Experiments</DisplayOption>
           </DisplaySelect>
         </DisplaySelectContainer>
-      </section>
-      <div className="display-list-wrapper" style={{ width: '100%' }}>
+      </DisplaySelectWrapper>
+      <DisplayListWrapper className="display-list-wrapper">
         <DisplayListInner onEnter={getHeight}>
           {work.map((project, idx) => (
             <DisplayCopy
@@ -283,19 +411,33 @@ const Work = ({ style, handleSelect }) => {
               onMouseEnter={() => {
                 handleSelect(project._id);
               }}
-              className={'list-node'}
-            >
+              className={`list-node ${activeIndex === idx ? 'active' : ''}`}>
               <DisplayMeta>
                 {project.title}
                 {project.status && (
                   <DisplayStatus>{project.status}</DisplayStatus>
                 )}
               </DisplayMeta>
-              <DisplayArrow>⟶</DisplayArrow>
+              <DisplayArrow>→</DisplayArrow>
             </DisplayCopy>
           ))}
         </DisplayListInner>
-      </div>
+      </DisplayListWrapper>
+      <DisplayTouch>
+        <DisplayTouchTitle>
+          {activeProject.title}
+          {activeProject.status && (
+            <DisplayStatus>{activeProject.status}</DisplayStatus>
+          )}
+        </DisplayTouchTitle>
+        <DisplayTouchControls>
+          <DisplayButton onClick={decrement}>←</DisplayButton>
+          <DisplayButton onClick={increment}>→</DisplayButton>
+          <DisplayButtonLink {...hasURL(activeProject.url)}>
+            Visit
+          </DisplayButtonLink>
+        </DisplayTouchControls>
+      </DisplayTouch>
     </DisplayList>
   );
 };
@@ -336,7 +478,7 @@ const Display = () => {
         <DisplayLabel>
           London, <br /> UK
         </DisplayLabel>
-        <DisplayLabel style={{ ...columnRange(4) }}>
+        <DisplayLabel style={{...columnRange(4)}}>
           v0.1 <Em />
           {new Date().getFullYear().toString()}
         </DisplayLabel>
@@ -364,10 +506,10 @@ export default function Home() {
         <Headline>About</Headline>
       </Grid>
       <Grid>
-        <Subheadline style={{ ...columnRange(1, 3) }}>
+        <Subheadline style={{...columnRange(1, 3)}}>
           Creative Technologist • UX Engineer
         </Subheadline>
-        <Subheadline style={{ ...columnRange(1, 4) }}>
+        <Subheadline style={{...columnRange(1, 4)}}>
           Hi I am Bojan, a London based Developer, Designer and Tinkerer with a
           passion for connecting design, art and technology. Working at Fnatic,
           formerly Facebook, Oculus and for Google.
@@ -394,7 +536,7 @@ export default function Home() {
         </section>
       </Grid>
       <Grid>
-        <section style={{ ...columnRange(1, 3) }}>
+        <section style={{...columnRange(1, 3)}}>
           <Label>Build With</Label>
           <Copy>
             Inter Typeface <Em />
@@ -408,7 +550,7 @@ export default function Home() {
           </Copy>
         </section>
       </Grid>
-      <FlexGrid style={{ flexDirection: 'row', margin: '2.4rem  0 6.4rem 0' }}>
+      <FlexGrid style={{flexDirection: 'row', margin: '2.4rem  0 6.4rem 0'}}>
         <GraphicGrid />
         <GraphicDial />
         <GraphicInput />
