@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, {keyframes} from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const leftDot = keyframes`
  0%, 70%, 100% {
@@ -41,7 +41,7 @@ const DotAnimation = styled.div`
   height: 0.4rem;
   border-radius: 0.2rem;
   position: relative;
-  animation: ${centerDot} 6s linear infinite;
+  animation: ${centerDot} 10s linear infinite;
 
   &:before {
     content: '';
@@ -51,7 +51,7 @@ const DotAnimation = styled.div`
     top: 0;
     left: 0;
     border-radius: 0.5em;
-    animation: ${leftDot} 6s linear infinite;
+    animation: ${leftDot} 10s linear infinite;
   }
 
   &:after {
@@ -62,7 +62,7 @@ const DotAnimation = styled.div`
     top: 0;
     border-radius: 0.5em;
     transition: all 0.12s;
-    animation: ${rightDot} 6s linear infinite;
+    animation: ${rightDot} 10s linear infinite;
   }
 `;
 

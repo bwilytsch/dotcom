@@ -1,6 +1,6 @@
 import Head from 'next/head';
-import React, {useState, useEffect, Fragment, useRef} from 'react';
-import styled, {keyframes, css} from 'styled-components';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
+import styled, { keyframes, css } from 'styled-components';
 import gsap from 'gsap';
 // UI Libarry
 import {
@@ -15,12 +15,18 @@ import {
   Navigation,
 } from '../components';
 
-import {columnRange, Em, DisplayHeadline} from '../components/Typography';
-import {FlexGrid} from '../components/Grid';
+import {
+  CVDate,
+  CVLink,
+  columnRange,
+  Em,
+  DisplayHeadline,
+} from '../components/Typography';
+import { FlexGrid } from '../components/Grid';
 import Surface from '../components/Surface';
-import {projects, experiments} from './api/hello';
-import {viewports} from '../components/constants';
-import {GraphicDial, GraphicGrid, GraphicInput} from '../components/Graphics';
+import { projects, experiments } from './api/hello';
+import { viewports } from '../components/constants';
+import { GraphicDial, GraphicGrid, GraphicInput } from '../components/Graphics';
 
 const fadeIn = keyframes`
   0% {
@@ -313,7 +319,7 @@ const StyledDisplayListInner = styled.div`
   width: 100%;
 `;
 
-const DisplayListInner = ({onEnter = () => {}, children, ...restProps}) => {
+const DisplayListInner = ({ onEnter = () => {}, children, ...restProps }) => {
   const ele = useRef(null);
   const prevHeight = useRef(null);
 
@@ -344,7 +350,9 @@ const DisplayListInner = ({onEnter = () => {}, children, ...restProps}) => {
 };
 
 const hasURL = url => {
-  return url ? {href: url, target: '_blanked'} : {'data-status': 'disabled'};
+  return url
+    ? { href: url, target: '_blanked' }
+    : { 'data-status': 'disabled' };
 };
 
 const workMap = {
@@ -352,13 +360,13 @@ const workMap = {
   experiments,
 };
 
-const Work = ({style, handleSelect}) => {
+const Work = ({ style, handleSelect }) => {
   const [work, setWork] = useState(projects);
   const [activeIndex, setActiveIndex] = useState(0);
   const [changed, setChanged] = useState(false);
 
   const handleChange = e => {
-    const {value} = e.target;
+    const { value } = e.target;
 
     if (workMap[value]) {
       setWork(workMap[value]);
@@ -368,7 +376,7 @@ const Work = ({style, handleSelect}) => {
   };
 
   const getHeight = height => {
-    gsap.to('.display-list-wrapper', 0.24, {height});
+    gsap.to('.display-list-wrapper', 0.24, { height });
   };
 
   const increment = () => {
@@ -392,8 +400,8 @@ const Work = ({style, handleSelect}) => {
       gsap.fromTo(
         '.list-node',
         0.32,
-        {opacity: 0, x: 10},
-        {opacity: 1, x: 0, stagger: 0.1},
+        { opacity: 0, x: 10 },
+        { opacity: 1, x: 0, stagger: 0.1 },
       );
     }
   }, [changed]);
@@ -420,7 +428,8 @@ const Work = ({style, handleSelect}) => {
               onMouseEnter={() => {
                 handleSelect(project._id);
               }}
-              className={`list-node ${activeIndex === idx ? 'active' : ''}`}>
+              className={`list-node ${activeIndex === idx ? 'active' : ''}`}
+            >
               <DisplayMeta>
                 {project.title}
                 {project.status && (
@@ -487,7 +496,7 @@ const Display = () => {
         <DisplayLabel>
           London, <br /> UK
         </DisplayLabel>
-        <DisplayLabel style={{...columnRange(4)}}>
+        <DisplayLabel style={{ ...columnRange(4) }}>
           v0.1 <Em />
           {new Date().getFullYear().toString()}
         </DisplayLabel>
@@ -507,6 +516,10 @@ const Display = () => {
   );
 };
 
+const CVEntry = styled.section`
+  margin: 0 0 1.4rem 0;
+`;
+
 export default function Home() {
   return (
     <Main>
@@ -515,11 +528,12 @@ export default function Home() {
         <Headline>About</Headline>
       </Grid>
       <Grid>
-        <Subheadline style={{...columnRange(1, 3)}}>UX Engineer</Subheadline>
-        <Subheadline style={{...columnRange(1, 4)}}>
-          Hi I am Bojan, a London based Developer, Designer and Tinkerer with a
-          passion for connecting design, art and technology. Working at Fnatic,
-          formerly Facebook, Oculus and for Google.
+        <Subheadline style={{ ...columnRange(1, 4) }}>
+          Hi I am Bojan, a London based Developer with a passion for connecting
+          design, art and technology. Learning about patterns, motion,
+          algorithms and human user interfaces to connect the dots a little
+          better, everyday. Currently Working at Fnatic, formerly Facebook,
+          Oculus and for Google.
         </Subheadline>
       </Grid>
       <Grid cols={2}>
@@ -527,47 +541,59 @@ export default function Home() {
           <Label>Professional</Label>
           <CopyHeadline>Experience</CopyHeadline>
           <Copy>
-            Creative Technologist <Em /> Fnatic <br />
-            UX Engineer & Product Designer <Em /> Oculus & Facebook <br />
-            Interaciton Designer <Em /> Google (via Harvey Nash Group) <br />
-            Freelance Designer & Developer
+            <CVEntry>
+              <CVDate>Sept 2019 - Present</CVDate>
+              Creative Technologist <Em /> Fnatic
+            </CVEntry>
+            <CVEntry>
+              <CVDate>May 2017 - May 2019</CVDate>
+              UX Engineer & Product Designer <Em /> Oculus & Facebook
+            </CVEntry>
+            <CVEntry>
+              <CVDate>August 2016 - May 2017</CVDate>
+              Interaciton Designer <Em /> Google (via Harvey Nash Group)
+            </CVEntry>
+            <CVEntry>
+              <CVDate>Feb 2013 - Jul 2016</CVDate>
+              Freelance Designer & Developer
+            </CVEntry>
+            <CVLink href="https://docs.google.com/presentation/d/1nljKBKEihwkZvuzp3F1869hhVtG2Od1m9xxabJY9Yz0/edit?usp=sharing">
+              View Detailed CV
+            </CVLink>
           </Copy>
         </section>
         <section>
           <Label>Recognition</Label>
           <CopyHeadline>Awards</CopyHeadline>
           <Copy>
-            Develeoper Awards - Awwwards <br />
-            Site of the Day — Awwwards <br />
-            Site of the Day — CSSDesignAwards <br />
-            Site of the Day — CSSDesignAwards — Susa Ventures
+            <CVEntry>1x Develeoper Awards - Awwwards</CVEntry>
+            <CVEntry>2x Site of the Day — Awwwards</CVEntry>
+            <CVEntry>1x Site of the Day — CSSDesignAwards</CVEntry>
           </Copy>
         </section>
       </Grid>
-      <Grid>
+      <Grid cols={2}>
         <section>
           <Label>Personal</Label>
-          <CopyHeadline>Mechanical Keyboards</CopyHeadline>
+          <CopyHeadline>Mechanical Keyboards Enthusiast</CopyHeadline>
           <Copy>
             Daily driver — 64%, Brass Plate, lubbed with 205g0 Krytox, TX Films,
             Gateron Yellow Inks, MaxKey BW SA keycaps, frosted low profile case.
           </Copy>
+          <Copy>Plaid, Planck and custom 60% build.</Copy>
         </section>
       </Grid>
       <Grid>
-        <section style={{...columnRange(1, 2)}}>
+        <section style={{ ...columnRange(1, 2) }}>
           <Label>Build With</Label>
           <Copy>
-            Inter Typeface <Em />
-            <a href="https://rsms.me/inter/">Link</a>
-            <br />
-            NextJS
-            <br />
-            Styled Components
-            <br />
-            ThreeJS
-            <br />
-            React
+            <CVLink href="https://rsms.me/inter/">Inter Typeface</CVLink>
+            <CVLink href="https://vercel.com/">NextJS</CVLink>
+            <CVLink href="https://styled-components.com/">
+              Styled Components
+            </CVLink>
+            <CVLink href="https://threejs.org">ThreeJS</CVLink>
+            <CVLink href="https://reactjs.org">React</CVLink>
           </Copy>
         </section>
         <section>
@@ -578,7 +604,7 @@ export default function Home() {
           </Copy>
         </section>
       </Grid>
-      <FlexGrid style={{flexDirection: 'row', margin: '2.4rem  0 6.4rem 0'}}>
+      <FlexGrid style={{ flexDirection: 'row', margin: '2.4rem  0 6.4rem 0' }}>
         <GraphicGrid />
         <GraphicDial />
         <GraphicInput />

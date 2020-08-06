@@ -1,7 +1,7 @@
-import React, {forwardRef} from 'react';
+import React, { forwardRef } from 'react';
 import NextLink from 'next/link';
-import styled, {css, keyframes} from 'styled-components';
-import {viewports} from './constants';
+import styled, { css, keyframes } from 'styled-components';
+import { viewports } from './constants';
 
 // Grid based extension
 const gridStyle = css`
@@ -25,6 +25,17 @@ export const Headline = styled.h1`
 
 export const Em = () => `— `;
 
+export const CVDate = styled.h3`
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  display: block;
+  margin: 0;
+  padding: 0;
+  color: var(--accent);
+`;
+
 export const fadeIn = keyframes`
   0%{
     opacity: 0
@@ -45,9 +56,21 @@ export const DisplayHeadline = styled(Headline)`
 export const Subheadline = styled.h2`
   font-size: 2.4rem;
   font-weight: 500;
-  line-height: 1.2em;
+  line-height: 1.33em;
   color: var(--accent);
-  letter-spacing: -0.06em;
+  letter-spacing: -0.04em;
+
+  @media ${viewports.small()} {
+    line-height: 1.5em;
+  }
+`;
+
+export const CVLink = styled.a`
+  font-size: 1.4rem;
+  line-height: 1.3em;
+  display: block;
+  margin: 0 0 0.6em 0;
+  text-decoration: underline;
 `;
 
 export const CopyHeadline = styled.h3`

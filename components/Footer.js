@@ -1,25 +1,25 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import Grid from './Grid';
-import {Em} from './Typography';
-import {viewports} from './constants';
+import { Em } from './Typography';
+import { viewports } from './constants';
 
 const links = [
   {
     label: 'Github',
-    url: '',
+    url: 'https://github.com/bwilytsch',
   },
   {
     label: 'Linkedin',
-    url: '',
-  },
-  {
-    label: 'Codesandbox',
-    url: '',
+    url: 'https://www.linkedin.com/in/bojan-wilytsch-b5244b3a/',
   },
   {
     label: 'Codepen',
-    url: '',
+    url: 'https://codepen.io/bwilytsch',
+  },
+  {
+    label: 'Twitter',
+    url: 'https://twitter.com/bwilytsch',
   },
 ];
 
@@ -66,8 +66,8 @@ const Footer = () => {
   return (
     <Fragment>
       <StyledFooter>
-        <Grid style={{padding: '0.8rem'}}>
-          {links.map(({label, url}, idx) => (
+        <Grid style={{ padding: '0.8rem' }}>
+          {links.map(({ label, url }, idx) => (
             <a href={url} key={idx}>
               {label}
             </a>
