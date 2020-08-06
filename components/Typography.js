@@ -59,10 +59,6 @@ export const Subheadline = styled.h2`
   line-height: 1.33em;
   color: var(--accent);
   letter-spacing: -0.04em;
-
-  @media ${viewports.small()} {
-    line-height: 1.5em;
-  }
 `;
 
 export const CVLink = styled.a`
