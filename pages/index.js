@@ -534,11 +534,11 @@ export default function Home() {
       </Grid>
       <Grid>
         <Subheadline style={{ ...columnRange(1, 4) }}>
-          Hi I am Bojan, a London based Developer with a passion for connecting
-          design, art and technology. Learning about patterns, motion,
-          algorithms and human user interfaces to connect the dots a little
-          better, everyday. Currently Working at Fnatic, formerly Facebook,
-          Oculus and for Google.
+          Hi! I am Bojan, a London based Developer with a passion for connecting
+          design, art, and technology. I get a kick out of learning about
+          patterns, motion, algorithms, and human user interfaces that connect
+          the dots a little better. Currently working at Fnatic, formerly
+          Facebook, Oculus, and Google.
         </Subheadline>
       </Grid>
       <Grid cols={2}>
