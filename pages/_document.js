@@ -1,8 +1,8 @@
-import Document, {Html, Head, Main, NextScript} from 'next/document';
-import {Fragment} from 'react';
-import {ServerStyleSheet} from 'styled-components';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+import { Fragment } from 'react';
+import { ServerStyleSheet } from 'styled-components';
 
-const GA = ({id}) => {
+const GA = ({ id }) => {
   return (
     <script
       dangerouslySetInnerHTML={{
@@ -18,7 +18,7 @@ const GA = ({id}) => {
   );
 };
 
-const ASYNCGA = ({id}) => {
+const ASYNCGA = ({ id }) => {
   return (
     <Fragment>
       <script
@@ -33,7 +33,7 @@ const ASYNCGA = ({id}) => {
   );
 };
 
-const GTAHead = ({id}) => {
+const GTAHead = ({ id }) => {
   return (
     <script
       dangerouslySetInnerHTML={{
@@ -49,7 +49,7 @@ const GTAHead = ({id}) => {
   );
 };
 
-const GTABody = ({id}) => {
+const GTABody = ({ id }) => {
   return (
     <noscript
       dangerouslySetInnerHTML={{
@@ -92,7 +92,9 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head></Head>
+        <Head>
+          <ASYNCGA id="UA-26971500-1" />
+        </Head>
         <body>
           <Main />
           <NextScript />

@@ -524,7 +524,7 @@ const Display = () => {
   );
 };
 
-const CVEntry = styled.section`
+const CVEntry = styled.div`
   margin: 0 0 1.4rem 0;
 `;
 

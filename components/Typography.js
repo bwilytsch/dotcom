@@ -82,8 +82,9 @@ const sharedCopyStyle = css`
   color: var(--accent);
 `;
 
-export const Copy = styled.p`
+export const Copy = styled.div`
   ${sharedCopyStyle}
+  margin: 2rem 0;
 `;
 
 export const Label = styled.span`
