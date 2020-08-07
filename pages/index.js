@@ -1,6 +1,6 @@
 import Head from 'next/head';
-import React, {useState, useEffect, Fragment, useRef} from 'react';
-import styled, {keyframes, css} from 'styled-components';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
+import styled, { keyframes, css } from 'styled-components';
 import gsap from 'gsap';
 // UI Libarry
 import {
@@ -22,11 +22,11 @@ import {
   Em,
   DisplayHeadline,
 } from '../components/Typography';
-import {FlexGrid} from '../components/Grid';
+import { FlexGrid } from '../components/Grid';
 import Surface from '../components/Surface';
-import {projects, experiments} from './api/hello';
-import {viewports} from '../components/constants';
-import {GraphicDial, GraphicGrid, GraphicInput} from '../components/Graphics';
+import { projects, experiments } from './api/hello';
+import { viewports } from '../components/constants';
+import { GraphicDial, GraphicGrid, GraphicInput } from '../components/Graphics';
 
 const fadeIn = keyframes`
   0% {
@@ -101,6 +101,7 @@ const displayButtonStyle = `
   cursor: pointer;
   outline: none;
   user-select: none;
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 
   &:not([data-status='disabled']) {
@@ -326,7 +327,7 @@ const StyledDisplayListInner = styled.div`
   width: 100%;
 `;
 
-const DisplayListInner = ({onEnter = () => {}, children, ...restProps}) => {
+const DisplayListInner = ({ onEnter = () => {}, children, ...restProps }) => {
   const ele = useRef(null);
   const prevHeight = useRef(null);
 
@@ -357,7 +358,9 @@ const DisplayListInner = ({onEnter = () => {}, children, ...restProps}) => {
 };
 
 const hasURL = url => {
-  return url ? {href: url, target: '_blanked'} : {'data-status': 'disabled'};
+  return url
+    ? { href: url, target: '_blanked' }
+    : { 'data-status': 'disabled' };
 };
 
 const workMap = {
@@ -365,13 +368,13 @@ const workMap = {
   experiments,
 };
 
-const Work = ({style, handleSelect}) => {
+const Work = ({ style, handleSelect }) => {
   const [work, setWork] = useState(projects);
   const [activeIndex, setActiveIndex] = useState(0);
   const [changed, setChanged] = useState(false);
 
   const handleChange = e => {
-    const {value} = e.target;
+    const { value } = e.target;
 
     if (workMap[value]) {
       setWork(workMap[value]);
@@ -381,7 +384,7 @@ const Work = ({style, handleSelect}) => {
   };
 
   const getHeight = height => {
-    gsap.to('.display-list-wrapper', 0.24, {height});
+    gsap.to('.display-list-wrapper', 0.24, { height });
   };
 
   const increment = () => {
@@ -405,8 +408,8 @@ const Work = ({style, handleSelect}) => {
       gsap.fromTo(
         '.list-node',
         0.32,
-        {opacity: 0, x: 10},
-        {opacity: 1, x: 0, stagger: 0.1},
+        { opacity: 0, x: 10 },
+        { opacity: 1, x: 0, stagger: 0.1 },
       );
     }
   }, [changed]);
@@ -433,7 +436,8 @@ const Work = ({style, handleSelect}) => {
               onMouseEnter={() => {
                 handleSelect(project._id);
               }}
-              className={`list-node ${activeIndex === idx ? 'active' : ''}`}>
+              className={`list-node ${activeIndex === idx ? 'active' : ''}`}
+            >
               <DisplayMeta>
                 {project.title}
                 {project.status && (
@@ -500,7 +504,7 @@ const Display = () => {
         <DisplayLabel>
           London, <br /> UK
         </DisplayLabel>
-        <DisplayLabel style={{...columnRange(4)}}>
+        <DisplayLabel style={{ ...columnRange(4) }}>
           v0.1 <Em />
           {new Date().getFullYear().toString()}
         </DisplayLabel>
@@ -532,7 +536,7 @@ export default function Home() {
         <Headline>About</Headline>
       </Grid>
       <Grid>
-        <Subheadline style={{...columnRange(1, 4)}}>
+        <Subheadline style={{ ...columnRange(1, 4) }}>
           Hi! I am Bojan, a London based Developer with a passion for connecting
           design, art, and technology. I get a kick out of learning about
           patterns, motion, algorithms, and human user interfaces that connect
@@ -588,7 +592,7 @@ export default function Home() {
         </section>
       </Grid>
       <Grid>
-        <section style={{...columnRange(1, 2)}}>
+        <section style={{ ...columnRange(1, 2) }}>
           <Label>Build With</Label>
           <Copy>
             <CVLink href="https://rsms.me/inter/">Inter Typeface</CVLink>
@@ -608,7 +612,7 @@ export default function Home() {
           </Copy>
         </section>
       </Grid>
-      <FlexGrid style={{flexDirection: 'row', margin: '2.4rem  0 6.4rem 0'}}>
+      <FlexGrid style={{ flexDirection: 'row', margin: '2.4rem  0 6.4rem 0' }}>
         <GraphicGrid />
         <GraphicDial />
         <GraphicInput />
