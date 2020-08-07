@@ -412,8 +412,9 @@ const Surface = ({ratio = [1, 1], projectId = null}) => {
           .filter(({url}) => url.length > 0),
         arr => {
           textures = arr;
-          // Show image
-          gsap.to('#three-target', 0.48, {opacity: 1});
+          // Load first image by default
+
+          changeTexture(textures[0]._projectId);
         },
       );
     }, 0);
