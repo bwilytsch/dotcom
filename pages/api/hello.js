@@ -13,7 +13,16 @@ export const experiments = [
     description: '',
     status: status.CODE,
     url: 'https://codesandbox.io/s/dynamic-aabb-binary-tree-collision-ho1xz',
-    media: [{src: './experiments/aabb-node-tree.jpg', type: 'image'}],
+    media: [
+      {
+        src: './production/experiments/webp/aabb-node-tree.webp',
+        type: 'image/webp',
+      },
+      {
+        src: './production/experiments/jpg/aabb-node-tree.jpg',
+        type: 'image/jpg',
+      },
+    ],
     _id: uuidv4(),
   },
   {
@@ -21,7 +30,10 @@ export const experiments = [
     description: '',
     status: status.CODE,
     url: 'https://codepen.io/bwilytsch/full/EMKRVM',
-    media: [{src: './experiments/curves.jpg', type: 'image'}],
+    media: [
+      {src: './production/experiments/webp/curves.webp', type: 'image/webp'},
+      {src: './production/experiments/jpg/curves.jpg', type: 'image/jpg'},
+    ],
     _id: uuidv4(),
   },
   {
@@ -29,7 +41,10 @@ export const experiments = [
     description: '',
     status: null,
     url: 'https://csb-njvnq.netlify.app/',
-    media: [{src: './experiments/kbdfans.jpg', type: 'image'}],
+    media: [
+      {src: './production/experiments/webp/kbdfans.webp', type: 'image/webp'},
+      {src: './production/experiments/jpg/kbdfans.jpg', type: 'image/jpg'},
+    ],
     _id: uuidv4(),
   },
 ];
@@ -40,7 +55,10 @@ export const projects = [
     description: '',
     status: status.PROGRESS,
     url: '',
-    media: [{src: './projects/icongrid.jpg', type: 'image'}],
+    media: [
+      {src: './production/projects/webp/icongrid.webp', type: 'image/webp'},
+      {src: './production/projects/jpg/icongrid.jpg', type: 'image/jpg'},
+    ],
     _id: uuidv4(),
   },
   {
@@ -48,7 +66,10 @@ export const projects = [
     description: '',
     status: null,
     url: 'https://keycaps.fnatic.com',
-    media: [{src: './projects/fnatic-df.jpg', type: 'image'}],
+    media: [
+      {src: './production/projects/webp/fnatic-df.webp', type: 'image/webp'},
+      {src: './production/projects/jpg/fnatic-df.jpg', type: 'image/jpg'},
+    ],
     _id: uuidv4(),
   },
   {
@@ -57,7 +78,13 @@ export const projects = [
     status: null,
     url:
       'https://www.oculus.com/experiences/gear-vr/1257988667656584/?locale=en_GB',
-    media: [{src: './projects/oculus-browser.jpg', type: 'image'}],
+    media: [
+      {
+        src: './production/projects/webp/oculus-browser.webp',
+        type: 'image/webp',
+      },
+      {src: './production/projects/jpg/oculus-browser.jpg', type: 'imag/jpge'},
+    ],
     _id: uuidv4(),
   },
   {
@@ -65,7 +92,10 @@ export const projects = [
     description: '',
     status: null,
     url: 'https://dash-ar.fnatic.com/',
-    media: [{src: './projects/dash-ar.jpg', type: 'image'}],
+    media: [
+      {src: './production/projects/webp/dash-ar.webp', type: 'image/webp'},
+      {src: './production/projects/jpg/dash-ar.jpg', type: 'image/jpg'},
+    ],
     _id: uuidv4(),
   },
   {
@@ -74,7 +104,16 @@ export const projects = [
     status: null,
     url:
       'https://apps.apple.com/us/app/weather-the-weather-channel/id295646461#?platform=appleWatch',
-    media: [{src: './projects/the-weather-channel.jpg', type: 'image'}],
+    media: [
+      {
+        src: './production/projects/webp/the-weather-channel.webp',
+        type: 'image/webp',
+      },
+      {
+        src: './production/projects/jpg/the-weather-channel.jpg',
+        type: 'image/jpg',
+      },
+    ],
     _id: uuidv4(),
   },
   {
@@ -82,7 +121,10 @@ export const projects = [
     description: '',
     status: status.REDACTED,
     url: '',
-    media: [{src: '', type: 'image'}],
+    media: [
+      {src: '', type: 'image/webp'},
+      {src: '', type: 'image/jpg'},
+    ],
     _id: uuidv4(),
   },
 ];

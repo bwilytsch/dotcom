@@ -22,7 +22,7 @@ import {
   Raycaster,
   MeshBasicMaterial,
 } from 'three';
-import {lerp} from './utils';
+import {lerp, supportsWebp} from './utils';
 import gsap from 'gsap';
 import {projects, experiments} from '../pages/api/hello';
 
@@ -404,11 +404,15 @@ const Surface = ({ratio = [1, 1], projectId = null}) => {
     };
 
     // Unblock main thread
-    setTimeout(() => {
+    setTimeout(async () => {
       // Buffer Textures
+
+      const webpSupported = await supportsWebp();
+      const source = webpSupported ? 0 : 1;
+
       loadAllTextures(
         [...projects, ...experiments]
-          .map(({media, _id}) => ({url: media[0].src, _id}))
+          .map(({media, _id}) => ({url: media[source].src, _id}))
           .filter(({url}) => url.length > 0),
         arr => {
           textures = arr;

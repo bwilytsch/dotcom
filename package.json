@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev -p 1234",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 1234",
+    "export": "next export",
+    "webp": "rm -rf ./public/production && node ./scripts/webp.js"
   },
   "dependencies": {
     "next": "9.5.0",
@@ -17,6 +19,10 @@
   "devDependencies": {
     "babel-plugin-styled-components": "^1.11.1",
     "gsap": "^3.4.2",
+    "imagemin": "^7.0.1",
+    "imagemin-jpegtran": "^7.0.0",
+    "imagemin-webp": "^6.0.0",
+    "next-pwa": "^3.1.1",
     "next-svgr": "0.0.2",
     "normalize.css": "^8.0.1",
     "sass": "^1.26.10",
