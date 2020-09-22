@@ -21,7 +21,7 @@ jobs:
         with:
           HOST: ${{ secrets.DO_HOST }}
           USERNAME: ${{ secrets.DO_USERNAME }}
-          KEY: ${{ secrets.DO_SSHKEY }}
+          KEY: ${{ secrets.DO_KEY }}
           envs: GITHUB_USERNAME, GITHUB_TOKEN, REGISTRY, IMAGE_NAME
           script: |
             whoami
