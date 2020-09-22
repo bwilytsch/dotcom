@@ -1,3 +1,6 @@
+env:
+  DOCKER_IMAGE: "bwilytsch/dotcom:0.0.1"  
+
 name: Deployment Action
 on:
   push:
@@ -15,6 +18,9 @@ jobs:
           username: ${{ secrets.DO_USERNAME }}
           key: ${{ secrets.BWILYTSCH_SECRET }}
           passphrase: ${{ secrets.BWILYTSCH_SECRET_PASSPHRASE }}
+          envs: DOCKER_IMAGE  
           port: 22
           script: |
-            ls -a
+            docker stop $(docker ps -a -q)
+            docker pull $DOCKER_IMAGE
+            docker run -dit -p 80:1234 $DOCKER_IMAGE
