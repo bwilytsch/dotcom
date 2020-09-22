@@ -2,15 +2,20 @@ env:
   IMAGE_NAME: "bwilytsch/dotcom"
   REGISTRY: "https://hub.docker.com/r"
   
- jobs:
+on:
+  push:
+     branches: 
+       - master
+  
+jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.event.name == 'push'
-    
+      
     steps:
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.3
-        envs:
+        env:
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
