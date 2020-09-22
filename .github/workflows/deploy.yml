@@ -24,8 +24,6 @@ jobs:
           KEY: ${{ secrets.DO_SSHKEY }}
           envs: GITHUB_USERNAME, GITHUB_TOKEN, REGISTRY, IMAGE_NAME
           script: |
-            docker stop $(docker ps -a -q)
-            docker login $REGISTRY -u $GITHUB_USERNAME -p $GITHUB_TOKEN
-            docker pull $REGSISTRY/$IMAGE_NAME:0.0.1
-            docker run -dit -p 80:1234 https://hub.docker.com/r/bwilytsch/dotcom
+            whoami
+            ls -al
             
