@@ -11,8 +11,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Docker Login & Build & Push
+        uses: actions/checkout@v2
         with:
           env: DOCKER_IMAGE
           script: |
