@@ -1,15 +1,28 @@
 env:
   DOCKER_IMAGE: "bwilytsch/dotcom:0.0.1"  
 
-name: Deployment Action
+name: Build & Deploy
 on:
   push:
     branches: [ master ]
 
-jobs:
+jobs:       
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker Login & Build & Push
+        with:
+          env: DOCKER_IMAGE
+          script: |
+            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+            docker build --tag $DOCKER_IMAGE .
+            docker push $DOCKER_IMAGE    
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    needs: [ build ]
     steps:
       - name: Deploy to Digital Ocean Droplet
         uses: appleboy/ssh-action@master
@@ -23,4 +36,5 @@ jobs:
           script: |
             docker stop $(docker ps -a -q)
             docker pull $DOCKER_IMAGE
-            docker run -dit -p 80:1234 $DOCKER_IMAGE
+            docker run -dit -p 80:1234 $DOCKER_IMAGE   
+    
