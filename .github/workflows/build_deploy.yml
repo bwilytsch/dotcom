@@ -14,7 +14,7 @@ jobs:
       - name: Docker Login & Build & Push
         uses: actions/checkout@v2
         with:
-          env: DOCKER_IMAGE
+          envs: DOCKER_IMAGE
           script: |
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
             docker build --tag $DOCKER_IMAGE .
